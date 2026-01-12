@@ -1,0 +1,64 @@
+.game-header-section {
+    padding-top: 2rem;
+    color: #2854C5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rocket-image {
+    height: 2rem;
+}
+
+.grid-container {
+    padding-top: 2rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.mine-grid {
+    background-color: rgb(174, 172, 172);
+    display: inline-block;
+    align-items: center;
+    border: 2px solid rgb(99, 98, 98);
+}
+
+.cell.revealed {
+    border-top-color: #c0c0c0;
+    border-left-color: #c0c0c0;
+    border-right-color: #c0c0c0;
+    border-bottom-color: #c0c0c0;
+}
+
+.cell:hover {
+    cursor: auto;
+}
+
+.cell {
+    text-align: center;
+    background-color: #c0c0c0;
+    border-width: 2px;
+    border-style: solid; 
+    /*Outer shading*/
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    height: 26px;
+}
+
+.cell:hover {
+    cursor: pointer;
+}
+
+.cell.revealed:active {
+    background-color: #c0c0c0;
+    border-color: #c0c0c0;
+};
+
+.cell:active {
+    background-color: #c0c0c0;
+    border-style: none;
+    border-color: #808080;
+};

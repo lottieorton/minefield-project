@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'Minefield Font';
+  src: url('../fonts/Space_Mono/SpaceMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Minefield Font';
+  src: url('../fonts/Space_Mono/SpaceMono-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  font-family: 'Minefield Font', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: azure;
+}
+
+code {
+  /*font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;*/
+}
