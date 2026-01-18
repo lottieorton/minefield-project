@@ -2,8 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { API_BASE_URL } from '../App.js';
 import { Link, useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import Filter from './Filter.js';
+import GameBoard from './presentational/GameBoard.js';
 import '../styles/GameSelection.css';
 import Rocket from '../imgs/Rocket.png';
+import { createBoard } from './functions/gameBoardCreation.js';
 
 
 export default function GameSelection () {
@@ -15,10 +17,8 @@ export default function GameSelection () {
     const [boardCols, setBoardCols] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [gameWon, setgameWon] = useState(false);
-    //const [numCellsToClear, setNumCellsToClear] = useState('');
     const [numStars, setNumStars] = useState(0);
-
-    /* To be moved into a logic only file shortly */
+    
     const checkClickedValue = (rowIndex, colIndex) => {
         if(completeGameBoard[rowIndex][colIndex] === "*") {
             setGameOver(true);
@@ -37,14 +37,11 @@ export default function GameSelection () {
                 setgameWon(true);
                 //SAVE WIN TO DATABASE
             }
-            if(completeGameBoard[rowIndex][colIndex] === 0) {
+            /*if(completeGameBoard[rowIndex][colIndex] === 0) {
                 //then do similar check of all around to clear all other 0s, act as if handle click on them
-            }
+            }*/
         }
     };
-
-    /* Upto here */
-
 
     const handleFilterChange = (newValue) => {
         setGameDifficulty(newValue);
@@ -52,7 +49,28 @@ export default function GameSelection () {
     
     const handleClick = async (e) => {
         e.preventDefault();
-        try {
+        const generatedBoard = createBoard(gameDifficulty);
+        if(!generatedBoard) return;
+        setCompleteGameBoard(generatedBoard);
+        setPlayingGameBoard(generatedBoard.map(row => row.map(() => null)));
+        setBoardRows(generatedBoard.length);
+        setBoardCols(generatedBoard[0].length);
+
+        //PASS THE VALUE STRAIGHT FROM FUNCTION??
+        let count = 0;
+        for (let i = 0; i < generatedBoard.length; i++) {
+            for (let j = 0; j < generatedBoard[0].length; j++) {
+                if(generatedBoard[i][j] === "*") {
+                    //setNumStars(prev => prev + 1);
+                    count++;
+                }
+                console.log(`numStars: ${numStars}, cell:${i},${j}`);
+            }
+        };
+        setNumStars(count);
+
+        //LOGIC FOR BACKEND PULLING OF GAME
+        /*try {
             const response = await fetch(`${API_BASE_URL}/gameBoard/createBoard/${gameDifficulty}`, {
                 method: 'GET',
                 headers: {
@@ -68,7 +86,6 @@ export default function GameSelection () {
             const data = await response.json();
             setCompleteGameBoard(data);
             setPlayingGameBoard(data.map(row => row.map(() => null)));
-            /*setPlayingGameBoard(Array(data.length * data[0].length).fill(null));*/
             setBoardRows(data.length);
             setBoardCols(data[0].length);
 
@@ -85,7 +102,7 @@ export default function GameSelection () {
             console.log('gameboard: ' + JSON.stringify(data));
         } catch (error) {
             console.error('Create board error:', error.message);
-        }
+        }*/
     };
 
     const handleCellClick = (rowIndex, colIndex) => {
@@ -115,7 +132,8 @@ export default function GameSelection () {
             <Filter onValueChange={handleFilterChange} />
             <button onClick={handleClick}>Start Game Now</button>
 
-            {boardRows === 0 ? '' : <div className="grid-container">
+            <GameBoard boardRows={boardRows} boardCols={boardCols} playingGameBoard={playingGameBoard} onCellClick={handleCellClick} gameOver={gameOver} gameWon={gameWon} />
+            {/*boardRows === 0 ? '' : <div className="grid-container">
                 <div 
                     className="mine-grid" 
                     style={{
@@ -145,7 +163,7 @@ export default function GameSelection () {
 
             {gameWon ? <div>
                 <p>Congrats, you discovered all the mines!</p>
-            </div> : ''}
+            </div> : ''*/}
 
 
         </>

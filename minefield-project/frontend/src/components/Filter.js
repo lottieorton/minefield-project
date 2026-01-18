@@ -9,7 +9,7 @@ export default function Filter({ onValueChange }) {
     return (
         <>            
             <form>
-                <label for= "chooseGame">Choose your difficulty: </label>
+                <label for= "gameChoices">Choose your difficulty: </label>
                 <select id="gameChoices" name="gameChoices" onChange={handleChange}>
                     <option value="easy" >Easy</option>
                     <option value="medium">Medium</option>

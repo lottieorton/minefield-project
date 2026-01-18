@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import MinesweeperIcon from '../imgs/MinesweeperIcon.png';
 
 export default function Nav () {
-
     return (
         <section className='navSection'>
             <section className='links'>

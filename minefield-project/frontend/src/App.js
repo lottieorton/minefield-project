@@ -1,5 +1,4 @@
 import './App.css';
-
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import Header from './components/Header.js';
 import Nav from './components/Nav.js';
@@ -15,14 +14,15 @@ export const API_BASE_URL =
         ? 'https://ecommerceapi-4-0b65.onrender.com'
         : 'http://localhost:4001';
 
-const router = createBrowserRouter(createRoutesFromElements(
-  <Route path = '/' element = { <Header /> } >
-    <Route index element = { <Nav /> } />
-    <Route path = 'game' element = { <GameSelection /> } />
-  </Route>
-));
 
-function App() {
+export default function App() {
+  const router = createBrowserRouter(createRoutesFromElements(
+    <Route path = '/' element = { <Header /> } >
+      <Route index element = { <Nav /> } />
+      <Route path = 'game' element = { <GameSelection /> } />
+    </Route>
+  ));
+  
   return (
     <RouterProvider router={ router } />
     /*<div className="App">
@@ -43,5 +43,3 @@ function App() {
     </div>*/
   );
 }
-
-export default App;
