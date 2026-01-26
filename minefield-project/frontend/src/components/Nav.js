@@ -8,7 +8,7 @@ export default function Nav () {
         <section className='navSection'>
             <section className='links'>
                 <Link className='navLink' to="/game">Start a game</Link>
-                <Link className='navLink' to="/game">Start a game 2</Link>
+                <Link className='navLink' to="/register">Register</Link>
                 <Link className='navLink' to="/game">Start a game 3</Link>
                 <Link className='navLink' to="/game">Start a game 4</Link>
             </section>

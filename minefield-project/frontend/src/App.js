@@ -3,6 +3,7 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } 
 import Header from './components/Header.js';
 import Nav from './components/Nav.js';
 import GameSelection from './components/GameSelection.js';
+import Register from './components/Register.js';
 
 console.log(`Env variable ${process.env.NODE_ENV}`);
 console.log(`Env variable render ${process.env.RENDER}`);
@@ -20,6 +21,7 @@ export default function App() {
     <Route path = '/' element = { <Header /> } >
       <Route index element = { <Nav /> } />
       <Route path = 'game' element = { <GameSelection /> } />
+      <Route path = 'register' element = { <Register /> } />
     </Route>
   ));
   

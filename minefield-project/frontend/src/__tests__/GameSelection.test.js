@@ -242,7 +242,7 @@ describe('Check handleClick logic', () => {
         //action
         const startGameButton = screen.getByText(/Start Game Now/i);
         fireEvent.click(startGameButton); 
-        screen.debug();      
+        //screen.debug();      
         //assert
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent(/playingboardprop: |/i);

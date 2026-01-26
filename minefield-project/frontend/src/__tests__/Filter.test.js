@@ -24,7 +24,7 @@ describe('Filter component', () => {
         const filter = screen.getByLabelText(/choose your difficulty/i);
         fireEvent.change(filter, { target: {value: 'hard'}});
         //assert
-        screen.debug();
+        //screen.debug();
         expect(mockHandleChange).toHaveBeenCalledWith('hard');
         expect(filter.value).toBe('hard')
     })

@@ -1,7 +1,7 @@
 //const express = require('express');
 const { createBoard } = require('../functions/game.js');
 
-const createGameBoard = (req, res, next) => {
+const createGameBoard = (req, res) => {
     try {
         const size = req.params.size;
         console.log(`Size ${size}`);
