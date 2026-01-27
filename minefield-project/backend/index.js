@@ -101,7 +101,7 @@ app.post('/login', (req, res, next) => {
         console.log(`autentication done error is: ${JSON.stringify(err)} user is ${JSON.stringify(user)}, info is: ${JSON.stringify(info)}`)
 
         if (err) {
-            console.log(`autentication failed with error`)
+            console.log(`authentication failed with error`)
             return next(err);
         }
         if (!user) { 

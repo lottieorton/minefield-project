@@ -29,6 +29,16 @@ jest.mock('../components/GameSelection.js', () => ({
   default: () => <div data-testid="mockGameSelectionComponent">Mock GameSelection Component</div>,
   GameSelection: () => <div data-testid="mockGameSelectionComponent">Mock GameSelection Component</div>
 }));
+jest.mock('../components/Register.js', () => ({
+  __esModule: true,  
+  default: () => <div data-testid="mockRegisterComponent">Mock Register Component</div>,
+  Register: () => <div data-testid="mockRegisterComponent">Mock Register Component</div>
+}));
+jest.mock('../components/Login.js', () => ({
+  __esModule: true,  
+  default: () => <div data-testid="mockLoginComponent">Mock Login Component</div>,
+  Login: () => <div data-testid="mockLoginComponent">Mock Login Component</div>
+}));
 
 describe('App component routing', () => {
   it('renders the Header and Nav component on the root path "/" ', async () => {
@@ -77,6 +87,56 @@ describe('App component routing', () => {
       expect(gameSelectionComponent).toBeInTheDocument();
     })
     expect(screen.queryByTestId('mockNavComponent')).not.toBeInTheDocument();
+  });
+
+  it('renders the Header and Register component on the path "/register" ', async () => {
+    //arrange
+    const MockHeader = require('../components/Header.js').Header;
+    const MockNav = require('../components/Nav.js').Nav;
+    const MockRegister = require('../components/Register.js').Register;
+    //create a router for this test
+    const testRouter = createMemoryRouter(createRoutesFromElements([
+      <Route path = '/' element = { <MockHeader /> } >
+        <Route index element = { <MockNav /> } />
+        <Route path = 'register' element = { <MockRegister /> } />
+      </Route>
+    ]), { initialEntries: ['/register'] }); //sets the initial URL for this test
+    //action
+    render(<RouterProvider router={testRouter} />);
+    //assert
+    await waitFor(() => {
+      const headerComponent = screen.getByTestId('mockHeaderComponent');
+      const registerComponent = screen.getByTestId('mockRegisterComponent');
+      expect(headerComponent).toBeInTheDocument();
+      expect(registerComponent).toBeInTheDocument();
+    })
+    expect(screen.queryByTestId('mockNavComponent')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('mockLoginComponent')).not.toBeInTheDocument();
+  });
+
+  it('renders the Header and Login component on the path "/login" ', async () => {
+    //arrange
+    const MockHeader = require('../components/Header.js').Header;
+    const MockNav = require('../components/Nav.js').Nav;
+    const MockLogin = require('../components/Login.js').Login;
+    //create a router for this test
+    const testRouter = createMemoryRouter(createRoutesFromElements([
+      <Route path = '/' element = { <MockHeader /> } >
+        <Route index element = { <MockNav /> } />
+        <Route path = 'login' element = { <MockLogin /> } />
+      </Route>
+    ]), { initialEntries: ['/login'] }); //sets the initial URL for this test
+    //action
+    render(<RouterProvider router={testRouter} />);
+    //assert
+    await waitFor(() => {
+      const headerComponent = screen.getByTestId('mockHeaderComponent');
+      const loginComponent = screen.getByTestId('mockLoginComponent');
+      expect(headerComponent).toBeInTheDocument();
+      expect(loginComponent).toBeInTheDocument();
+    })
+    expect(screen.queryByTestId('mockNavComponent')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('mockRegisterComponent')).not.toBeInTheDocument();
   });
 
   it('renders the RouterProvider element', async () => {
