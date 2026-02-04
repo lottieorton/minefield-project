@@ -203,10 +203,26 @@ describe('Login component', () => {
         const header = screen.getByText(/Login!/i);
         const usernameLabel = screen.getByLabelText(/username/i);
         const passwordLabel = screen.getByLabelText(/password/i);
-        const button = screen.getByRole('button', {name: /log me in!/i});
+        const loginButton = screen.getByRole('button', {name: /log me in!/i});
         expect(header).toBeInTheDocument();
         expect(usernameLabel).toBeInTheDocument();
         expect(passwordLabel).toBeInTheDocument();
-        expect(button).toBeInTheDocument();
+        expect(loginButton).toBeInTheDocument();
+    });
+
+    it('Renders the Google Login link going to correct URL', () => {
+        //arrange
+        const googleLink = 'http://localhost:4001/login/google';
+        //action
+        render(
+            <MemoryRouter>
+                <Login />
+            </MemoryRouter>
+        );
+        //assert
+        //screen.debug;
+        const googleButton = screen.getByRole('link', {name: /sign in with google/i});
+        expect(googleButton).toBeInTheDocument();
+        expect(googleButton).toHaveAttribute('href', googleLink);
     });
 });

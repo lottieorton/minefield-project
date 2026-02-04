@@ -79,6 +79,7 @@ export default function Login () {
                     <button type="submit">Log me in!</button>
                 </div>
             </form>
+            <a href={`${API_BASE_URL}/login/google`} className="google-button">Sign in with Google</a>
 
             {/*Display error message */}
             {error && (

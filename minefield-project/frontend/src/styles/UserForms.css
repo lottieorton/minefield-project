@@ -17,6 +17,7 @@
     background-color: rgb(43, 101, 146);
     color: white;
     border-radius: 1rem;
+    gap: 1.5rem;
 }
 
 .form {
@@ -33,12 +34,17 @@
     gap: 1rem;
 }
 
-button {
+.main-header {
+    margin: 0;
+}
+
+button, .google-button {
     width: 100%;
     padding: 0.5px;
     height: 2.5rem;
     background-color: rgb(3, 35, 63);
     color: #ffffff;
+    text-decoration: none;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -46,9 +52,13 @@ button {
     cursor: pointer;
     font-family: 'User Input Font', sans-serif;
     transition: transform 0.1s, background-color 0.2s;
+    display: flex;
+    justify-content: center; /* Centers text horizontally */
+    align-items: center;     /* Centers text vertically */
+    box-sizing: border-box;
 }
 
-button:hover {
+button:hover, a:hover {
     transform: translateY(-2px);
 }
 

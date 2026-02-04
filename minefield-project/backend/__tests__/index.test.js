@@ -71,6 +71,39 @@ describe('frontend base url logic and CORS calls', () => {
     });
 });
 
+describe('API base url logic', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+        jest.resetModules();
+        process.env = { ...originalEnv };
+    });
+
+    afterAll(() => {
+        process.env = originalEnv;
+    });
+
+    it('uses localhost url when in development', async () => {
+        //arrange
+        process.env.NODE_ENV = 'development';
+        const expectedURL = "http://localhost:4001"
+        //action
+        const { API_BASE_URL } = require('../index');
+        //assert
+        expect(API_BASE_URL).toBe(expectedURL);
+    });
+
+    it('uses Render url when in production', async () => {
+        //arrange
+        process.env.NODE_ENV = 'production';
+        const expectedURL = "https://ecommerceapi-5-iktx.onrender.com"
+        //action
+        const { API_BASE_URL } = require('../index');
+        //assert
+        expect(API_BASE_URL).toBe(expectedURL);
+    });
+});
+
 describe('backend configuration', () => {
     /* DONT NEED THE STATIC FILES from /public
     it('should serve static files from /public', async () => {
@@ -258,24 +291,6 @@ describe('backend configuration', () => {
         expect(response.text).toBe(errorMessage);
     });
 
-/*CANT/DONT NEED TI TEST LISTENING ON PORT
-    it('app listening on port', () => {
-        //arrange
-        jest.resetModules();
-        const listenSpy = jest.spyOn(express.application, 'listen').mockImplementation((port, cb) => {
-            if (cb) cb(); // Execute the callback immediately
-            return { close: jest.fn() };
-        });
-        const mainModule = require.main
-        require.main = { filename: require.resolve('../index.js') };
-        //action
-        require('../index');
-        //asserts
-        expect(listenSpy).toHaveBeenCalled();
-        //clean up
-        listenSpy.mockRestore();
-        require.main = mainModule;
-    });*/
 });
 
 describe('getByUsername', () => {

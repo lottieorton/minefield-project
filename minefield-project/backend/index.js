@@ -8,13 +8,20 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const db = require('./queries/queries.js');
 const bodyParser = require('body-parser');
+const loadEnv = require('./functions/configHelper.js');
+loadEnv();
 //need to update to HTTPS
 //need to update to ENV
 const FRONTEND_BASE_URL = 
      process.env.NODE_ENV === 'production' 
         ? 'https://ecommerceapi-5-iktx.onrender.com'
         : 'http://localhost:3000';
+const API_BASE_URL = 
+     process.env.NODE_ENV === 'production' 
+        ? 'https://ecommerceapi-5-iktx.onrender.com'
+        : 'http://localhost:4001';
 const cors = require('cors');
+const GoogleStrategy = require('passport-google-oidc');
 
 //Router imports
 const gameBoardRouter = require('./routes/gameBoard.js');
@@ -40,6 +47,67 @@ app.use(
 //passport and bcrypt
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `${API_BASE_URL}/auth/google/redirect`
+  },
+    async function(issuer, profile, cb) {
+        try {
+            //check for existing federated credential
+            console.log("issuer is: " + issuer);
+            console.log("profile is: " + JSON.stringify(profile));
+            const credResult = await db.pool.query(
+                'SELECT * FROM federated_credentials WHERE provider = $1 AND subject = $2', 
+                [issuer, profile.id]
+            );
+            console.log(`credResult is:` + JSON.stringify(credResult));
+
+            const cred = credResult.rows[0];
+        
+            if (!cred) {
+                // The Google account has not logged in to this app before.  Create a new user record and link it to the Google account.
+                const userInsertResult = await db.pool.query(
+                    'INSERT INTO users (first_name, last_name, username) VALUES ($1, $2, $3) RETURNING id, first_name', 
+                    [profile.name.givenName, profile.name.familyName, profile.emails[0].value]
+                );
+                const newUser = userInsertResult.rows[0];
+                console.log('newUser: ' + JSON.stringify(newUser));
+                await db.pool.query(
+                    'INSERT INTO federated_credentials (user_id, provider, subject) VALUES ($1, $2, $3)', 
+                    [newUser.id, issuer, profile.id]
+                );
+                //returns the new user object for Passport serialization
+                return cb(null, newUser);
+            } else {
+                // The Google account has previously logged in to the app.  Get the user record linked to the Google account and log the user in.
+                const userResult = await db.pool.query(
+                    'SELECT id, username, first_name, last_name FROM users WHERE id = $1', 
+                    [cred.user_id]
+                );
+                const user = userResult.rows[0];
+                if (!user) { return cb(new Error("User ID linked to credential not found.")); }
+                return cb(null, user);
+            }
+        } catch (err) {
+            console.error("Google Auth Error:", err);
+            return cb(err);
+        }
+    }
+));
+
+//Google request login
+app.get('/login/google', passport.authenticate('google', { scope: [ 'email', 'profile' ]}));
+
+//callback URL called when logged in
+app.get('/auth/google/redirect',
+    passport.authenticate('google', { failureRedirect: `${FRONTEND_BASE_URL}/login`, failureMessage: true }),
+    (req, res) => {
+        //successful authentication, redirection
+        res.redirect(`${FRONTEND_BASE_URL}/profile`);
+    }
+);
 
 const getUserByUsername = async (username) => {
     try {
@@ -190,6 +258,7 @@ app.use((err, req, res, next) => {
 module.exports = {
     app,
     FRONTEND_BASE_URL,
+    API_BASE_URL,
     sessionSecret,
     getUserByUsername,
     authenticateUser
