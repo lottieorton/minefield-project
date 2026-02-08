@@ -26,7 +26,7 @@ const GoogleStrategy = require('passport-google-oidc');
 //Router imports
 const gameBoardRouter = require('./routes/gameBoard.js');
 const usersRouter = require('./routes/users.js');
-
+const scoreRouter = require('./routes/scores.js');
 //app.use(express.static('public')); NOT NEEDED
 app.use(cors({ credentials: true, origin: FRONTEND_BASE_URL })); //allows credentials request
 app.use(bodyParser.json());
@@ -37,9 +37,10 @@ const sessionSecret = crypto.randomBytes(32).toString('base64');
 
 app.use(
     session({
+        base: '/',
         secret: sessionSecret,
         cookie: {maxAge: 1000*60*60*24, secure: false, sameSite: 'lax'}, //secure: true, HTTPS only, set sameSite to 'none when set secure back to true
-        resave: false, //? true?
+        resave: true,
         saveUninitialized: false
     })
 );
@@ -154,8 +155,10 @@ passport.deserializeUser(async (id, done) => {
         );
         const user = result.rows[0];
         if(user) {
+            console.log('req.user deserialize:'+ user);
             done(null, user);
         } else {
+            console.log('req.user deserialize: not found');
             done(null, false);
         }
     } catch (error) {
@@ -242,7 +245,7 @@ app.get('/me', getUserById);
 //API requests
 app.use('/gameBoard', gameBoardRouter);
 app.use('/user', usersRouter);
-
+app.use('/scores', scoreRouter);
 
 //error-handling middleware
 app.use((err, req, res, next) => {
