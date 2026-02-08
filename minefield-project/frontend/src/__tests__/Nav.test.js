@@ -16,7 +16,7 @@ describe('Nav component', () => {
         expect(screen.getByText(`Start a game`)).toBeInTheDocument();
         expect(screen.getByText(`Register`)).toBeInTheDocument();
         expect(screen.getByText(`Login`)).toBeInTheDocument();
-        expect(screen.getByText(`Start a game 4`)).toBeInTheDocument();
+        expect(screen.getByText(`Scores`)).toBeInTheDocument();
         expect(icon).toHaveAttribute('src', 'MinesweeperIcon.png');
     });
 
@@ -31,10 +31,10 @@ describe('Nav component', () => {
         const startGameLink = screen.getByRole('link', { name: `Start a game` }); //replace with /Start a game/i once you remove the other links
         const registerLink = screen.getByRole('link', { name: `Register` });
         const loginLink = screen.getByRole('link', { name: `Login` });
-        const startGameLink4 = screen.getByRole('link', { name: `Start a game 4` });
+        const scoresLink = screen.getByRole('link', { name: `Scores` });
         expect(startGameLink).toHaveAttribute('href', '/game');
         expect(registerLink).toHaveAttribute('href', '/register');
         expect(loginLink).toHaveAttribute('href', '/login');
-        expect(startGameLink4).toHaveAttribute('href', '/game');
+        expect(scoresLink).toHaveAttribute('href', '/scores');
     })
 });

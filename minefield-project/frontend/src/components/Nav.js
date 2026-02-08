@@ -10,7 +10,7 @@ export default function Nav () {
                 <Link className='navLink' to="/game">Start a game</Link>
                 <Link className='navLink' to="/register">Register</Link>
                 <Link className='navLink' to="/login">Login</Link>
-                <Link className='navLink' to="/game">Start a game 4</Link>
+                <Link className='navLink' to="/scores">Scores</Link>
             </section>
             <img src={MinesweeperIcon} alt="Lottie's MineSweeper Icon" className='icon' />
         </section>

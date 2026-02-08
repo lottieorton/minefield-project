@@ -30,7 +30,7 @@ export default function GameSelection () {
                     if(playingGameBoard[i][j] === null) {
                         numCellsRemaining += 1;
                     }
-                    console.log(`numRemain: ${numCellsRemaining}, cell:${i},${j}`);
+                    //console.log(`numRemain: ${numCellsRemaining}, cell:${i},${j}`);
                 }
             };
             if(numCellsRemaining === numStars) {
@@ -64,7 +64,7 @@ export default function GameSelection () {
                     //setNumStars(prev => prev + 1);
                     count++;
                 }
-                console.log(`numStars: ${numStars}, cell:${i},${j}`);
+                //console.log(`numStars: ${numStars}, cell:${i},${j}`);
             }
         };
         setNumStars(count);

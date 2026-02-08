@@ -5,6 +5,7 @@ import Nav from './components/Nav.js';
 import GameSelection from './components/GameSelection.js';
 import Register from './components/Register.js';
 import Login from './components/Login.js'
+import ScorePage from './components/ScorePage.js'; 
 
 console.log(`Env variable ${process.env.NODE_ENV}`);
 console.log(`Env variable render ${process.env.RENDER}`);
@@ -24,6 +25,7 @@ export default function App() {
       <Route path = 'game' element = { <GameSelection /> } />
       <Route path = 'register' element = { <Register /> } />
       <Route path = 'login' element = { <Login /> } />
+      <Route path = 'scores' element = { <ScorePage /> } />
     </Route>
   ));
   
