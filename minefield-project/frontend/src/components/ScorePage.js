@@ -29,10 +29,11 @@ export default function ScorePage () {
                 }
                 console.log(`Scores data: ${JSON.stringify(data)}`);
                 const updatedScore = scores.map(score => {
-                    const dbScores = data.find(dbScore => score.difficulty === dbScore.difficulty);
+                    const dbScores = data.find(dbScore => score.difficulty.toLowerCase() == dbScore.difficulty);
                     return {
                         ...score,
-                        ...dbScores
+                        ...dbScores,
+                        difficulty: score.difficulty
                     };
                 });
                 console.log(`updatedScore: ` + JSON.stringify(updatedScore));

@@ -1,6 +1,6 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import '@testing-library/jest-dom';
 
 jest.mock('../components/functions/gameBoardCreation.js', () => ({
@@ -50,8 +50,6 @@ jest.mock('../components/presentational/GameBoard.js', () => {
 import GameSelection from "../components/GameSelection.js";
 const { createBoard } = require('../components/functions/gameBoardCreation.js');
 
-//import MockedGameBoard from '../components/presentational/GameBoard';
-
 describe('checkClickedValue logic', () => {
     const createTestGame = () => {
         const mockBoard = [
@@ -75,6 +73,10 @@ describe('checkClickedValue logic', () => {
     it('updates gameOver to true if mine clicked', async () => {
         //arrange
         createTestGame();
+        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+            ok: true,
+            json: async () => ({ success: true }),
+        });
         //action
         const mineButton = screen.getByRole('button', { name: /click mine/i });
         fireEvent.click(mineButton);
@@ -82,11 +84,26 @@ describe('checkClickedValue logic', () => {
         //assert
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent(/gameoverprop: true/i);
+        await waitFor(() => {
+            expect(fetchSpy).toHaveBeenCalledWith(
+                expect.stringContaining('/scores/saveScore'),
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining('"win":false')
+                })
+            );
+        });
+
+        fetchSpy.mockRestore();
     });
 
     it('correctly sets gameWon = true when all correct cells are clicked, otherwise gameOver and gameWon remain false', async () => {
         //arrange
         createTestGame();
+        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+            ok: true,
+            json: async () => ({ success: true }),
+        });
         //action
         const cell01 = screen.getByRole('button', { name: /click cell 0-1/i });
         const cell10 = screen.getByRole('button', { name: /click cell 1-0/i });
@@ -99,9 +116,20 @@ describe('checkClickedValue logic', () => {
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent(/gamewonprop: true/i);
         expect(gameBoard).toHaveTextContent(/gameoverprop: false/i);
+        await waitFor(() => {
+            expect(fetchSpy).toHaveBeenCalledWith(
+                expect.stringContaining('/scores/saveScore'),
+                expect.objectContaining({
+                    method: 'POST',
+                    body: expect.stringContaining('"win":true')
+                })
+            );
+        });
+
+        fetchSpy.mockRestore();
     })
      
-    //NON-CORRECTLY MOCKED TESTS
+    //NON-CORRECTLY MOCKED TESTS -- MORE END TO END TEST
     /*it('sets gameOver to true if a mine is a clicked', () => {
         //arrange
         createTestGame();
@@ -175,7 +203,7 @@ describe('Check handleFilterChange logic', () => {
         expect(createBoard).toHaveBeenCalledWith("medium");
     })
 
-    //NOT CORRECTLY MOCKED TEST -- AND expect(filter... is wrong not testing the state update
+    //NOT CORRECTLY MOCKED TEST MORE END TO END TEST -- AND expect(filter... is wrong not testing the state update
     /*it('sets the gameDifficulty to the new selected option', () => {
         //arrange
         render(

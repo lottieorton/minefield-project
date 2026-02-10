@@ -6,7 +6,7 @@ import GameBoard from './presentational/GameBoard.js';
 import '../styles/GameSelection.css';
 import Rocket from '../imgs/Rocket.png';
 import { createBoard } from './functions/gameBoardCreation.js';
-
+import { saveGame } from './functions/saveGame.js';
 
 export default function GameSelection () {
     const navigate = useNavigate();
@@ -19,10 +19,10 @@ export default function GameSelection () {
     const [gameWon, setgameWon] = useState(false);
     const [numStars, setNumStars] = useState(0);
     
-    const checkClickedValue = (rowIndex, colIndex) => {
+    const checkClickedValue = async (rowIndex, colIndex) => {
         if(completeGameBoard[rowIndex][colIndex] === "*") {
             setGameOver(true);
-            //SAVE FAILURE TO DATABASE
+            saveGame(gameDifficulty, false);
         } else {
             let numCellsRemaining = -1;
             for (let i = 0; i < boardRows; i++) {
@@ -35,7 +35,7 @@ export default function GameSelection () {
             };
             if(numCellsRemaining === numStars) {
                 setgameWon(true);
-                //SAVE WIN TO DATABASE
+                saveGame(gameDifficulty, true);
             }
             /*if(completeGameBoard[rowIndex][colIndex] === 0) {
                 //then do similar check of all around to clear all other 0s, act as if handle click on them
@@ -107,13 +107,13 @@ export default function GameSelection () {
 
     const handleCellClick = (rowIndex, colIndex) => {
         console.log(`Clicked: ${rowIndex} + ${colIndex}`);
+        checkClickedValue(rowIndex, colIndex);
         if(gameOver || gameWon) return;
         setPlayingGameBoard(prevBoard => {
             return prevBoard.map((row, rIdx) => {
                 if (rIdx !== rowIndex) return row;
                 return row.map((cell, cIdx) => {
                     if (cIdx === colIndex) {
-                        checkClickedValue(rowIndex, colIndex);
                         return completeGameBoard[rowIndex][colIndex];
                     }
                     return cell;

@@ -19,8 +19,8 @@ import ScoreCard from '../components/presentational/ScoreCard.js';
 
 describe('fetches users score', () => {
     const testScores = [
-        {difficulty: "Easy", games: 3, wins: 2, losses: 1, 'wlratio': 67},
-        {difficulty: "Medium", games: 1, wins: 1, losses: 0, 'wlratio': 100}
+        {difficulty: "easy", games: 3, wins: 2, losses: 1, 'wlratio': 67},
+        {difficulty: "medium", games: 1, wins: 1, losses: 0, 'wlratio': 100}
     ];
 
     const finalScores = [
