@@ -130,7 +130,9 @@ export default function GameSelection () {
                 <img src={Rocket} alt='Rocket image' className='rocket-image' />
             </section>
             <Filter onValueChange={handleFilterChange} />
-            <button onClick={handleClick}>Start Game Now</button>
+            <div className='button-block'>
+                <button className='game-button' onClick={handleClick}>Start Game Now</button>
+            </div>
 
             <GameBoard boardRows={boardRows} boardCols={boardCols} playingGameBoard={playingGameBoard} onCellClick={handleCellClick} gameOver={gameOver} gameWon={gameWon} />
             {/*boardRows === 0 ? '' : <div className="grid-container">

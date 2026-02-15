@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../App.js';
+import '../styles/Filter.css';
 
 export default function Filter({ onValueChange }) {
     const handleChange = (e) => {
@@ -8,7 +9,7 @@ export default function Filter({ onValueChange }) {
 
     return (
         <>            
-            <form>
+            <form className='filter-form'>
                 <label for= "gameChoices">Choose your difficulty: </label>
                 <select id="gameChoices" name="gameChoices" onChange={handleChange}>
                     <option value="easy" >Easy</option>

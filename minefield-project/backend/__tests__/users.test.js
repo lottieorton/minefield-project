@@ -1,9 +1,10 @@
-const { createUser, registerUser, getUsers} = require('../queries/users.js');
+const { createUser, registerUser, getUsers, updateUser, getUser } = require('../queries/users.js');
 const usersRouter = require('../routes/users.js');
 const db = require('../queries/queries.js');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const request = require('supertest');
+const passport = require('passport');
 jest.mock('bcrypt', () => ({
     genSalt: jest.fn().mockResolvedValue('fake_salt'),
     hash: jest.fn().mockResolvedValue('fake_hashed_password')
@@ -13,6 +14,12 @@ jest.mock('../queries/queries.js', () => ({
         query: jest.fn()
     }
 }));
+
+jest.mock('../functions/ensureAuthenticated.js', () => ({
+    ensureAuthenticated: jest.fn()
+        // ensureAuthenticated: jest.fn((req, res, next) => next())
+}));
+const { ensureAuthenticated } = require('../functions/ensureAuthenticated.js');
 
 //USERS - QUERIES
 describe('createUser', () => {
@@ -204,6 +211,111 @@ describe('getUsers controller', () => {
     });
 });
 
+describe('getUser controller', () => {
+    let req, res;
+
+    const username = 'testuser';
+    const first_name = 'Lotts';
+    const last_name = 'Here'
+
+    beforeEach(() => {
+        req = {
+            user: { username: username},
+            body: {
+                first_name: first_name,
+                last_name: last_name
+            }
+        };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn().mockReturnThis()
+        };
+    });
+
+    it('returns logged in user', async () => {
+        //arrange
+        const mockUser = [{ username: 'username', first_name: 'First', last_name: 'Last' }];
+        db.pool.query.mockResolvedValueOnce({rows: [mockUser]});
+        //action
+        await getUser(req, res);
+        //assert
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({user: mockUser}));
+    });
+
+    it('handles database errors', async () => {
+        //arrange
+        const mockUser = [{ username: 'username', first_name: 'First', last_name: 'Last' }];
+        const databaseError = new Error('Database selection error');
+        db.pool.query.mockRejectedValueOnce(databaseError);
+        //action
+        await getUser(req, res);
+        //assert
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                msg: 'Database selection error'
+            })
+        );
+    });
+});
+
+describe('updateUser controller', () => {
+    let req, res;
+
+    const username = 'testuser';
+    const first_name = 'Lotts';
+    const last_name = 'Here'
+
+    beforeEach(() => {
+        req = {
+            user: { username: username},
+            body: {
+                first_name: first_name,
+                last_name: last_name
+            }
+        };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn().mockReturnThis()
+        };
+    })
+
+    it('on successful update returns 200 status and updated user', async () => {
+        //arrange
+        const mockUser = {
+            username: username, 
+            first_name: first_name,
+            last_name: last_name
+        };
+        db.pool.query.mockResolvedValueOnce({
+            rows: [mockUser]
+        });
+        //action
+        await updateUser(req, res);
+        //assert
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+            msg: 'User updated',
+            updatedUser: mockUser
+        }));
+    });
+
+    it('handles database errors', async () => {
+        //arrange
+        const databaseError = new Error('Update user error');
+        db.pool.query.mockRejectedValueOnce(databaseError);
+        //action
+        await updateUser(req, res);
+        //assert
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+            msg: 'Update user error'
+        }));
+    });
+});
+
+
 //USERS - ROUTES
 describe('users routes', () => {
     let app;
@@ -240,6 +352,27 @@ describe('users routes', () => {
     });
 
     it('GET /user/ route', async () => {
+        app = express();
+        app.use(express.json());
+        app.use((req, res, next) => {
+            req.isAuthenticated = () => true;
+            req.user = { id: 10, username: 'test' };
+            next();
+        });
+        app.use('/user', usersRouter);
+        //arrange
+        const mockUser = { username: 'test', first_name: 'First', last_name: 'Last' };
+        db.pool.query.mockResolvedValueOnce({ rows: [mockUser] });
+        ensureAuthenticated.mockImplementation((req, res, next) => next());
+        //action
+        const response = await request(app)
+            .get('/user/');
+        //assert
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({user: mockUser});
+    });
+    
+    it('GET /user/all route', async () => {
         //arrange
         const mockUsers = [{ username: 'username' }, { username: 'username2' }];
         db.pool.query.mockImplementation((sql, callback) => {
@@ -247,9 +380,41 @@ describe('users routes', () => {
         });
         //action
         const response = await request(app)
-            .get('/user/');
+            .get('/user/all');
         //assert
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject(mockUsers);
+    });
+
+    it('PATCH /user/updateUser route', async () => {
+        app = express();
+        app.use(express.json());
+        app.use((req, res, next) => {
+            req.isAuthenticated = () => true;
+            req.user = { id: 10, username: 'test' };
+            next();
+        });
+        app.use('/user', usersRouter);
+        //arrange
+        const mockUser = { id: 1, username: 'test', first_name: 'new', last_name: 'name', password: 'P@ssword' };
+        db.pool.query.mockResolvedValueOnce({ rows: [mockUser] });
+        ensureAuthenticated.mockImplementation((req, res, next) => next());
+        //action
+        // db.pool.query.mockResolvedValueOnce({
+        //     rows: mockUser
+        // });
+        const response = await request(app)
+            .patch('/user/updateUser')
+            .send({
+                username: 'test',
+                first_name: 'Lotts',
+                last_name: 'Here'
+            });
+        //assert
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+            msg: 'User updated',
+            updatedUser: mockUser
+        });
     });
 })

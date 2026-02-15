@@ -17,6 +17,7 @@ describe('Nav component', () => {
         expect(screen.getByText(`Register`)).toBeInTheDocument();
         expect(screen.getByText(`Login`)).toBeInTheDocument();
         expect(screen.getByText(`Scores`)).toBeInTheDocument();
+        expect(screen.getByText(`Profile`)).toBeInTheDocument();
         expect(icon).toHaveAttribute('src', 'MinesweeperIcon.png');
     });
 
@@ -32,9 +33,11 @@ describe('Nav component', () => {
         const registerLink = screen.getByRole('link', { name: `Register` });
         const loginLink = screen.getByRole('link', { name: `Login` });
         const scoresLink = screen.getByRole('link', { name: `Scores` });
+        const profileLink = screen.getByRole('link', { name: `Profile` });
         expect(startGameLink).toHaveAttribute('href', '/game');
         expect(registerLink).toHaveAttribute('href', '/register');
         expect(loginLink).toHaveAttribute('href', '/login');
         expect(scoresLink).toHaveAttribute('href', '/scores');
+        expect(profileLink).toHaveAttribute('href', '/profile');
     })
 });

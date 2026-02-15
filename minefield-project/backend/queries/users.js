@@ -49,8 +49,53 @@ const getUsers = (req, res) => {
     })
 };
 
+const getUser = async (req, res) => {
+    const { username } = req.user;
+    try {
+        const result = await pool.query(
+            `SELECT username, first_name, last_name FROM users 
+            WHERE username = $1`,
+            [username]
+        );
+        const user = await result.rows[0];
+        console.log(`updatedUser: ` + JSON.stringify(user));
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({
+            msg: error.message
+        });
+    }
+};
+
+async function updateUser (req, res) {
+    const { username } = req.user;
+    const { first_name, last_name } = req.body;
+    try {
+        const result = await pool.query(
+            `UPDATE users 
+            SET first_name = $1,
+                last_name = $2
+            WHERE username = $3
+            RETURNING username, first_name, last_name`,
+            [first_name, last_name, username]
+        );
+        const updatedUser = await result.rows[0];
+        console.log(`updatedUser: ` + JSON.stringify(updatedUser));
+        res.status(200).json({
+            msg: 'User updated',
+            updatedUser
+        });
+    } catch (error) {
+        res.status(500).json({
+            msg: error.message
+        });
+    }
+};
+
 module.exports = {
     createUser,
     registerUser,
-    getUsers
+    getUsers,
+    updateUser,
+    getUser
 };

@@ -39,6 +39,11 @@ jest.mock('../components/Login.js', () => ({
   default: () => <div data-testid="mockLoginComponent">Mock Login Component</div>,
   Login: () => <div data-testid="mockLoginComponent">Mock Login Component</div>
 }));
+jest.mock('../components/Profile.js', () => ({
+  __esModule: true,  
+  default: () => <div data-testid="mockProfileComponent">Mock Profile Component</div>,
+  Profile: () => <div data-testid="mockProfileComponent">Mock Profile Component</div>
+}));
 
 describe('App component routing', () => {
   it('renders the Header and Nav component on the root path "/" ', async () => {
@@ -134,6 +139,31 @@ describe('App component routing', () => {
       const loginComponent = screen.getByTestId('mockLoginComponent');
       expect(headerComponent).toBeInTheDocument();
       expect(loginComponent).toBeInTheDocument();
+    })
+    expect(screen.queryByTestId('mockNavComponent')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('mockRegisterComponent')).not.toBeInTheDocument();
+  });
+
+  it('renders the Header and Profile component on the path "/profile" ', async () => {
+    //arrange
+    const MockHeader = require('../components/Header.js').Header;
+    const MockNav = require('../components/Nav.js').Nav;
+    const MockProfile = require('../components/Profile.js').Profile;
+    //create a router for this test
+    const testRouter = createMemoryRouter(createRoutesFromElements([
+      <Route path = '/' element = { <MockHeader /> } >
+        <Route index element = { <MockNav /> } />
+        <Route path = 'profile' element = { <MockProfile /> } />
+      </Route>
+    ]), { initialEntries: ['/profile'] }); //sets the initial URL for this test
+    //action
+    render(<RouterProvider router={testRouter} />);
+    //assert
+    await waitFor(() => {
+      const headerComponent = screen.getByTestId('mockHeaderComponent');
+      const profileComponent = screen.getByTestId('mockProfileComponent');
+      expect(headerComponent).toBeInTheDocument();
+      expect(profileComponent).toBeInTheDocument();
     })
     expect(screen.queryByTestId('mockNavComponent')).not.toBeInTheDocument();
     expect(screen.queryByTestId('mockRegisterComponent')).not.toBeInTheDocument();

@@ -11,6 +11,7 @@ export default function Nav () {
                 <Link className='navLink' to="/register">Register</Link>
                 <Link className='navLink' to="/login">Login</Link>
                 <Link className='navLink' to="/scores">Scores</Link>
+                <Link className='navLink' to="/profile">Profile</Link>
             </section>
             <img src={MinesweeperIcon} alt="Lottie's MineSweeper Icon" className='icon' />
         </section>

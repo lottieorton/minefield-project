@@ -6,6 +6,7 @@ import GameSelection from './components/GameSelection.js';
 import Register from './components/Register.js';
 import Login from './components/Login.js'
 import ScorePage from './components/ScorePage.js'; 
+import Profile from './components/Profile.js';
 
 console.log(`Env variable ${process.env.NODE_ENV}`);
 console.log(`Env variable render ${process.env.RENDER}`);
@@ -26,6 +27,7 @@ export default function App() {
       <Route path = 'register' element = { <Register /> } />
       <Route path = 'login' element = { <Login /> } />
       <Route path = 'scores' element = { <ScorePage /> } />
+      <Route path = 'profile' element = { <Profile /> } />
     </Route>
   ));
   
