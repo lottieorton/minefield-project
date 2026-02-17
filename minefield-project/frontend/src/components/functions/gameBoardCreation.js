@@ -21,12 +21,12 @@ const createBoard = (difficulty) => {
     while(stars < numMines) {
         const row = Math.floor(Math.random() * size);
         const col = Math.floor(Math.random() * size);
-        console.log(`Star coords: ${row}, ${col}`);
+        // console.log(`Star coords: ${row}, ${col}`);
         if(board[row][col] !== '*') {
             board[row][col] = '*';
             stars += 1;
         }
-        console.log(board);
+        // console.log(board);
     }
 
     for (let i = 0; i < size; i++) {

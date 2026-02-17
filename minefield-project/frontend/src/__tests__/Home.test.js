@@ -1,14 +1,14 @@
-import Nav from '../components/Nav.js';
+import Home from '../components/Home.js';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
-describe('Nav component', () => {    
-    it('Renders the navigation links and Minesweep icon', () => {
+describe('Home component', () => {    
+    it('Renders the home links and Minesweep icon', () => {
         //action
         render(
             <MemoryRouter>
-                <Nav />
+                <Home />
             </MemoryRouter>
         );
         //assert
@@ -25,7 +25,7 @@ describe('Nav component', () => {
         //action
         render(
             <MemoryRouter>
-                <Nav />
+                <Home />
             </MemoryRouter>
         );
         //assert

@@ -1,15 +1,15 @@
 import './App.css';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import Header from './components/Header.js';
-import Nav from './components/Nav.js';
+import Home from './components/Home.js';
 import GameSelection from './components/GameSelection.js';
 import Register from './components/Register.js';
 import Login from './components/Login.js'
 import ScorePage from './components/ScorePage.js'; 
 import Profile from './components/Profile.js';
 
-console.log(`Env variable ${process.env.NODE_ENV}`);
-console.log(`Env variable render ${process.env.RENDER}`);
+// console.log(`Env variable ${process.env.NODE_ENV}`);
+// console.log(`Env variable render ${process.env.RENDER}`);
 
 //will need to update with httpS
 //to be updated with the correct URL when uploaded to Render
@@ -22,7 +22,7 @@ export const API_BASE_URL =
 export default function App() {
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path = '/' element = { <Header /> } >
-      <Route index element = { <Nav /> } />
+      <Route index element = { <Home /> } />
       <Route path = 'game' element = { <GameSelection /> } />
       <Route path = 'register' element = { <Register /> } />
       <Route path = 'login' element = { <Login /> } />

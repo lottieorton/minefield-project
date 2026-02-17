@@ -27,7 +27,7 @@ export default function ScorePage () {
                     let errorMessage = 'Scores request failed. Please try refreshing the page.';
                     throw new Error(errorMessage);
                 }
-                console.log(`Scores data: ${JSON.stringify(data)}`);
+                // console.log(`Scores data: ${JSON.stringify(data)}`);
                 const updatedScore = scores.map(score => {
                     const dbScores = data.find(dbScore => score.difficulty.toLowerCase() == dbScore.difficulty);
                     return {
@@ -36,7 +36,7 @@ export default function ScorePage () {
                         difficulty: score.difficulty
                     };
                 });
-                console.log(`updatedScore: ` + JSON.stringify(updatedScore));
+                // console.log(`updatedScore: ` + JSON.stringify(updatedScore));
                 setScores(updatedScore);
             } catch (error) {
                 console.error('Score fetching error:', error.message);

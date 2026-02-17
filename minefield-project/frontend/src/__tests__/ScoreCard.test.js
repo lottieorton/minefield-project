@@ -14,7 +14,7 @@ describe('renders component with prop values', () => {
                 <ScoreCard game={game} />
             </MemoryRouter>
         );
-        screen.debug();
+        //screen.debug();
         //assert
         const gameDifficulty = await screen.findByText(game.difficulty);
         const gameWins = await container.querySelector('.game-wins');

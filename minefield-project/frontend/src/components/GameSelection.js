@@ -106,7 +106,7 @@ export default function GameSelection () {
     };
 
     const handleCellClick = (rowIndex, colIndex) => {
-        console.log(`Clicked: ${rowIndex} + ${colIndex}`);
+        // console.log(`Clicked: ${rowIndex} + ${colIndex}`);
         checkClickedValue(rowIndex, colIndex);
         if(gameOver || gameWon) return;
         setPlayingGameBoard(prevBoard => {

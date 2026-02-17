@@ -212,8 +212,8 @@ app.post('/login', (req, res, next) => {
 app.get('/logout', (req, res, next) => {
     console.log("Is logout mocked?", req.logout.toString().includes('errorMessage'));
     req.logout((err) => {
-        console.log('error logging out');
         if (err) {
+            console.log('error logging out');
             return next(err);
         }
         //optional but deleting the session and clearling the cookie

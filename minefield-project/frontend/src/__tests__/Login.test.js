@@ -204,10 +204,12 @@ describe('Login component', () => {
         const usernameLabel = screen.getByLabelText(/username/i);
         const passwordLabel = screen.getByLabelText(/password/i);
         const loginButton = screen.getByRole('button', {name: /log me in!/i});
+        const registerLink = screen.getByRole('link', {name: /Not yet signed up\? Register here./i })
         expect(header).toBeInTheDocument();
         expect(usernameLabel).toBeInTheDocument();
         expect(passwordLabel).toBeInTheDocument();
         expect(loginButton).toBeInTheDocument();
+        expect(registerLink).toHaveAttribute('href', '/register');
     });
 
     it('Renders the Google Login link going to correct URL', () => {

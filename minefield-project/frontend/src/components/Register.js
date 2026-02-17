@@ -1,6 +1,6 @@
 import '../styles/UserForms.css';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../App.js';
 
 export default function Register () {
@@ -90,7 +90,11 @@ export default function Register () {
                 <div className="user-form-button">
                     <button type="submit">Sign Me Up!</button>
                 </div>
+                <Link className='redirect-user-entry' to="/login">
+                    Already registered or want to Login with Google? Login here.
+                </Link>
             </form>
+
 
             {/*Display error message */}
             {error && (

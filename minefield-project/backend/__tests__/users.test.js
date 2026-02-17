@@ -16,10 +16,11 @@ jest.mock('../queries/queries.js', () => ({
 }));
 
 jest.mock('../functions/ensureAuthenticated.js', () => ({
-    ensureAuthenticated: jest.fn()
+    ensureAuthenticated: jest.fn(),
+    checkLoggedIn: jest.fn()
         // ensureAuthenticated: jest.fn((req, res, next) => next())
 }));
-const { ensureAuthenticated } = require('../functions/ensureAuthenticated.js');
+const { ensureAuthenticated, checkLoggedIn } = require('../functions/ensureAuthenticated.js');
 
 //USERS - QUERIES
 describe('createUser', () => {
@@ -416,5 +417,24 @@ describe('users routes', () => {
             msg: 'User updated',
             updatedUser: mockUser
         });
+    });
+
+    it('GET /user/loggedInStatus route', async () => {
+        //arrange
+        app = express();
+        app.use(express.json());
+        app.use((req, res, next) => {
+            req.isAuthenticated = () => true;
+            req.user = { username: 'test' };
+            next();
+        });
+        app.use('/user', usersRouter);
+        checkLoggedIn.mockImplementation((req, res, next) => res.status(200).json({isLoggedIn: true}));
+        //action
+        const response = await request(app)
+            .get('/user/loggedInStatus');
+        //assert
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({isLoggedIn: true});
     });
 })

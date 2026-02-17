@@ -25,14 +25,14 @@ export default function Profile () {
                 });
 
                 const data = await response.json();
-                console.log('data: ' + JSON.stringify(data));
+                // console.log('data: ' + JSON.stringify(data));
 
                 if(!response.ok) {
                     //Default error message
                     let errorMessage = 'Selecting user details failed. Please try again.';
                     throw new Error(errorMessage);
                 }
-                console.log(`data: ${data}`)
+                // console.log(`data: ${data}`)
                 setUser(data.user);
             } catch (error) {
                 console.error('User selection error:', error.message);
@@ -70,7 +70,7 @@ export default function Profile () {
             });
 
             const data = await response.json();
-            console.log('data: ' + JSON.stringify(data));
+            // console.log('data: ' + JSON.stringify(data));
 
             if(!response.ok) {
                 //Default error message

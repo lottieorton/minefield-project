@@ -23,7 +23,7 @@ export const saveGame = async (gameDifficulty, win) => {
             let errorMessage = 'Saving Game failed.';
             throw new Error(errorMessage);
         }
-        console.log(`savedgame: ${JSON.stringify(data)}`);
+        // console.log(`savedgame: ${JSON.stringify(data)}`);
         return data;
     } catch (error) {
         console.error('Save game error:', error.message);

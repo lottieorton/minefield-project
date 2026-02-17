@@ -1,6 +1,6 @@
 import '../styles/UserForms.css';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { API_BASE_URL } from '../App.js';
 
 export default function Login () {
@@ -81,6 +81,9 @@ export default function Login () {
                 </div>
             </form>
             <a href={`${API_BASE_URL}/login/google`} className="google-button">Sign in with Google</a>
+            <Link className='redirect-user-entry' to="/register">
+                Not yet signed up? Register here.
+            </Link>
 
             {/*Display error message */}
             {error && (

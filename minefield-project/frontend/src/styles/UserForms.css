@@ -40,6 +40,10 @@
     text-decoration: underline;
 }
 
+.redirect-user-entry {
+    color: white;
+}
+
 button, .google-button {
     width: 100%;
     padding: 0.5px;

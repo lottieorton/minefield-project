@@ -254,10 +254,12 @@ describe('Register component', () => {
         const passwordLabel = screen.getByLabelText(/password/i);
         const firstNameLabel = screen.getByLabelText(/first name/i);
         const lastNameLabel = screen.getByLabelText(/last name/i);
+        const loginLink = screen.getByRole('link', {name: /already registered or want to Login with Google\? Login here./i });
         expect(header).toBeInTheDocument();
         expect(usernameLabel).toBeInTheDocument();
         expect(passwordLabel).toBeInTheDocument();
         expect(firstNameLabel).toBeInTheDocument();
         expect(lastNameLabel).toBeInTheDocument();
+        expect(loginLink).toHaveAttribute('href', '/login');
     });
 });

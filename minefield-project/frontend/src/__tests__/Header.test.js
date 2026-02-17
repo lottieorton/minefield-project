@@ -3,12 +3,13 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
+jest.mock('../components/Nav.js', () => { 
+    return function MockNav() { 
+        return <div data-testid="mock-nav">Mock Nav Component</div>; 
+    }; 
+});
+
 describe('Header component', () => {
-    /*jest.mock('react-router-dom', () => ({
-        ...jest.requireActual('react-router-dom'),
-        Outlet: () => <div data-testid="mocked-outlet">Mocked Outlet</div>
-    }));*/
-    
     it('check main header is rendered', () => {
         //action
         render(<Header />);
@@ -23,7 +24,7 @@ describe('Header component', () => {
         expect(screen.getByText(`Mocked Outlet`)).toBeInTheDocument();
     });*/
 
-    it('renders child content inside the Outlet', () => {
+    it('renders Nav and child content inside the Outlet', () => {
         //arrange
         const TestChild = () => <div>Child Content</div>;
         //action
@@ -38,5 +39,6 @@ describe('Header component', () => {
         )
         //assert
         expect(screen.getByText(/Child Content/i)).toBeInTheDocument();
+        expect(screen.getByTestId("mock-nav")).toBeInTheDocument();
     });
 });
