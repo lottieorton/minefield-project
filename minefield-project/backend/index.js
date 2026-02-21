@@ -232,15 +232,15 @@ app.get('/logout', (req, res, next) => {
 });
 
 //Just for testing purposes
-const getUserById = async (req, res, next) => {
-    if (req.isAuthenticated()) {
-        console.log('User session correctly sustained');
-        res.status(200).json(req.user.username);
-    } else {
-        res.status(401).send('Not authenticated');
-    } 
-};
-app.get('/me', getUserById);
+// const getUserById = async (req, res, next) => {
+//     if (req.isAuthenticated()) {
+//         console.log('User session correctly sustained');
+//         res.status(200).json(req.user.username);
+//     } else {
+//         res.status(401).send('Not authenticated');
+//     } 
+// };
+// app.get('/me', getUserById);
 
 //API requests
 app.use('/gameBoard', gameBoardRouter);

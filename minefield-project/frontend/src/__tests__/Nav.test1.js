@@ -4,12 +4,6 @@ import { waitFor, render, screen, fireEvent } from "@testing-library/react";
 import '@testing-library/jest-dom';
 import Nav from "../components/Nav.js";
 
-const mockNavigateFunction = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockNavigateFunction
-}));
-
 describe('checks user logged in status', () => {
     it('makes an API call to check if user logged in', async () => {
         //arrange
@@ -104,6 +98,27 @@ describe('checks user logged in status', () => {
 });
 
 describe('Check handleClick logic', () => {
+    let locationSpy;
+    const oldLocation = window.location;
+
+    beforeEach(() => { 
+        jest.clearAllMocks();
+        locationSpy = jest.fn();
+        delete window.location;
+        window.location = {
+            reload: jest.fn(),
+        };
+        
+        Object.defineProperty(window.location, 'href', { 
+            set: locationSpy,
+            configurable: true
+        }); 
+    });
+
+    afterAll(() => {
+        window.location = oldLocation
+    });
+    
     it('calls the /logout API endpoint', async () => {
         //arrange
         const fetchSpy = jest.spyOn(global, 'fetch')
@@ -163,8 +178,8 @@ describe('Check handleClick logic', () => {
         fireEvent.click(logoutButton); 
         //assert
         await waitFor(() => 
-            expect(mockNavigateFunction).toHaveBeenCalledWith('/')
-        ); 
+            expect(locationSpy).toHaveBeenCalledWith('/')
+        );
     });
 
     it('handles error message for !response.ok', async () => {

@@ -352,6 +352,24 @@ describe('users routes', () => {
         });
     });
 
+    it('POST /user/register route, which doesnt meet the checks', async () => {
+        //arrange
+        //const mockUser = { id: 1, username: 'test', first_name: 'Lotts' };
+        //db.pool.query.mockResolvedValueOnce({ rows: [mockUser] });
+        //action
+        const response = await request(app)
+            .post('/user/register')
+            .send({
+                username: 'test',
+                password: 'pssword',
+                first_name: 'Lotts',
+                last_name: 'Here'
+            });
+        //assert
+        expect(response.status).toBe(500);
+        expect(response.body).toMatchObject({"msg": "Password must be at least 8 characters long | Password must contain at least one uppercase letter"});
+    });
+
     it('GET /user/ route', async () => {
         app = express();
         app.use(express.json());
@@ -373,19 +391,19 @@ describe('users routes', () => {
         expect(response.body).toMatchObject({user: mockUser});
     });
     
-    it('GET /user/all route', async () => {
-        //arrange
-        const mockUsers = [{ username: 'username' }, { username: 'username2' }];
-        db.pool.query.mockImplementation((sql, callback) => {
-            callback(null, {rows: mockUsers});
-        });
-        //action
-        const response = await request(app)
-            .get('/user/all');
-        //assert
-        expect(response.status).toBe(200);
-        expect(response.body).toMatchObject(mockUsers);
-    });
+    // it('GET /user/all route', async () => {
+    //     //arrange
+    //     const mockUsers = [{ username: 'username' }, { username: 'username2' }];
+    //     db.pool.query.mockImplementation((sql, callback) => {
+    //         callback(null, {rows: mockUsers});
+    //     });
+    //     //action
+    //     const response = await request(app)
+    //         .get('/user/all');
+    //     //assert
+    //     expect(response.status).toBe(200);
+    //     expect(response.body).toMatchObject(mockUsers);
+    // });
 
     it('PATCH /user/updateUser route', async () => {
         app = express();

@@ -39,7 +39,7 @@ export default function Profile () {
             }
         };
         fetchUser();
-    }, []);
+    }, [success]);
 
     const handleChange = async (e) => {
         setUpdatedInfo({

@@ -43,17 +43,18 @@ export default function Register () {
                 },
                 body: JSON.stringify(payload)
             });
-
+            console.log('Not treated as throwing an error at this point');
             const data = await response.json();
 
             if(!response.ok) {
                 //Default error message
                 let errorMessage = 'Registration failed. Please try again.';
-
                 // Customize this condition to check for a "username exists" error
                 if (response.status === 409) {
                     errorMessage = `The username "${registerInfo.username}" is already taken. Please choose another one.`;
-                } 
+                } else if (response.status === 500 && data.msg) {
+                    errorMessage = data.msg;
+                }
                 throw new Error(errorMessage);
             }
 

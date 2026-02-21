@@ -188,6 +188,34 @@ describe('handleSubmit', () => {
         global.fetch.mockClear();
     });
 
+    it('for !response.ok with 500 API errors renders error message', async () => {
+        //arrange
+        const user = userEvent.setup();
+        //mocking the API call
+        global.fetch = jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                ok: false,
+                status: 500,
+                json: () => Promise.resolve({"msg":"Password needs to have at least 8 characters"})
+            })
+        );
+        render(
+            <MemoryRouter>
+                <Register />
+            </MemoryRouter>
+        );
+        //action
+        await user.type(screen.getByLabelText(/username/i), 'usernameMe');
+        await user.type(screen.getByLabelText(/password/i), 'Password123!');
+        await user.type(screen.getByLabelText(/first name/i), 'Lottie');
+        await user.type(screen.getByLabelText(/last name/i), 'Orton');
+        await user.click(screen.getByRole('button', {name: /sign me up!/i}));
+        //assert
+        const errorMessage = screen.getByText('Password needs to have at least 8 characters')
+        expect(errorMessage).toBeInTheDocument();
+        global.fetch.mockClear();
+    });
+
     it('for other API call !response.ok renders generic error message', async () => {
         //arrange
         const user = userEvent.setup();
@@ -196,7 +224,7 @@ describe('handleSubmit', () => {
             Promise.resolve({
                 ok: false,
                 status: 500,
-                json: () => Promise.resolve({"msg":"value too long for type character varying(50)"})
+                json: () => Promise.resolve({})
             })
         );
         render(

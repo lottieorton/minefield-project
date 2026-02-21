@@ -128,7 +128,12 @@ describe('handleSubmit', () => {
                     "last_name": "Name"
                 }
             })
-        });
+        })
+        .mockResolvedValueOnce({
+            ok: true,
+            status: 200,
+            json: async () => ({user: {username: "testUser", first_name: 'Test', last_name: 'Name'}}),
+        })
         
         render(
             <MemoryRouter>
@@ -151,7 +156,11 @@ describe('handleSubmit', () => {
                     body: JSON.stringify({ first_name: 'Test', last_name: 'Name'})
                 })
             );
-        })
+            expect(screen.getByText(/first name: test/i)).toBeInTheDocument();
+            expect(screen.getByText(/last name: name/i)).toBeInTheDocument();
+            expect(screen.getByLabelText(/first name/i)).toHaveValue('');
+            expect(screen.getByLabelText(/last name/i)).toHaveValue('');
+        });
         global.fetch.mockClear();
     });
 

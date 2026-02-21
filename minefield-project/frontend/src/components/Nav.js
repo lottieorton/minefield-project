@@ -57,8 +57,8 @@ export default function Nav () {
                 throw new Error(errorMessage);
             }
             console.log(`Log out data: ${JSON.stringify(data)}`);
-            
-            navigate('/');
+            window.location.href = '/';
+            //navigate('/');
         } catch (error) {
             console.error('Log out error:', error.message);
         }

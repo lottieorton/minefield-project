@@ -55,7 +55,8 @@ export default function Login () {
 
             //2s delay before redirecting
             setTimeout(() => {
-                navigate('/');
+                //navigate('/');
+                window.location.href = '/';
             }, 2000);
 
         } catch (error) {

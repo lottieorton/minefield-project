@@ -16,7 +16,7 @@ export default function GameSelection () {
     const [boardRows, setBoardRows] = useState(0);
     const [boardCols, setBoardCols] = useState(0);
     const [gameOver, setGameOver] = useState(false);
-    const [gameWon, setgameWon] = useState(false);
+    const [gameWon, setGameWon] = useState(false);
     const [numStars, setNumStars] = useState(0);
     
     const checkClickedValue = async (rowIndex, colIndex) => {
@@ -34,7 +34,7 @@ export default function GameSelection () {
                 }
             };
             if(numCellsRemaining === numStars) {
-                setgameWon(true);
+                setGameWon(true);
                 saveGame(gameDifficulty, true);
             }
             /*if(completeGameBoard[rowIndex][colIndex] === 0) {
@@ -49,6 +49,8 @@ export default function GameSelection () {
     
     const handleClick = async (e) => {
         e.preventDefault();
+        setGameOver(false);
+        setGameWon(false);
         const generatedBoard = createBoard(gameDifficulty);
         if(!generatedBoard) return;
         setCompleteGameBoard(generatedBoard);
@@ -107,19 +109,69 @@ export default function GameSelection () {
 
     const handleCellClick = (rowIndex, colIndex) => {
         // console.log(`Clicked: ${rowIndex} + ${colIndex}`);
+        // if(gameOver || gameWon) return;
+        console.log(`cell handleCellClicked: ${rowIndex} ${colIndex}`);
+        if(gameOver || gameWon || playingGameBoard[rowIndex][colIndex] !== null) return;
+        //creates a deep copy of the board so changes recognised by state
+        const newBoard = playingGameBoard.map(row => [...row]);
+
+        const recursivelyReveal = (row, col) => {
+            if(row < 0 || col < 0 || row >= boardRows || col >= boardCols) return;
+            if(newBoard[row][col] !== null) return;
+            const cellValue = completeGameBoard[row][col];
+            newBoard[row][col] = cellValue;
+            console.log('newBoard:' + newBoard);
+            
+            if(cellValue === 0) {
+                for(let i = -1; i <= 1; i++) {
+                    for(let j = -1; j <= 1; j++) {
+                        if(i !== 0 || j !== 0) {
+                            const newRow = row + i;
+                            const newCol = col + j;
+                            console.log(`new cell: ${newRow} ${newCol}`);
+                            recursivelyReveal(newRow, newCol);
+                        }
+                    }                    
+                }
+            }
+        };
+        
+        recursivelyReveal(rowIndex, colIndex);
+
+        // if(completeGameBoard[rowIndex][colIndex] === 0) {
+        //     for(let i = -1; i <= 1; i++) {
+        //         for(let j = -1; j <= 1; j++) {
+        //             const newRowIndex = rowIndex + i;
+        //             const newColIndex = colIndex + j;
+        //             console.log(`new cell: ${newRowIndex} ${newColIndex}`);
+        //             if(newRowIndex >= 0 && newColIndex >= 0 && newRowIndex < boardRows && newColIndex < boardCols && (i !== 0 || j !== 0)) {
+        //                 console.log(`new cell checked: ${newRowIndex} ${newColIndex}`);
+        //                 handleCellClick(newRowIndex, newColIndex);
+        //             }                    
+        //         }
+        //     }
+        // };
+
+
         checkClickedValue(rowIndex, colIndex);
-        if(gameOver || gameWon) return;
-        setPlayingGameBoard(prevBoard => {
-            return prevBoard.map((row, rIdx) => {
-                if (rIdx !== rowIndex) return row;
-                return row.map((cell, cIdx) => {
-                    if (cIdx === colIndex) {
-                        return completeGameBoard[rowIndex][colIndex];
-                    }
-                    return cell;
-                })
-            })
-        })
+        // setPlayingGameBoard(prevBoard => {
+        //     return prevBoard.map((row, rIdx) => {
+        //         console.log('update board');
+        //         if (rIdx !== rowIndex) return row;
+        //         return row.map((cell, cIdx) => {
+        //             if (cIdx === colIndex) {
+        //                 return completeGameBoard[rowIndex][colIndex];
+        //             }
+        //             return cell;
+        //         })
+        //     })
+        // })
+
+        // const valClickedCell = completeGameBoard[rowIndex][colIndex];
+        // const newPlayingGameBoard = playingGameBoard;
+        // newPlayingGameBoard[rowIndex][colIndex] = valClickedCell;
+        setPlayingGameBoard(newBoard);
+
     };
 
     return (

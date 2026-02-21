@@ -8,7 +8,7 @@ async function createUser (user) {
     const hashedPassword = await bcrypt.hash(password, salt);
     try {
         const result = await pool.query(
-            'INSERT INTO users (username, password, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING *',
+            'INSERT INTO users (username, password, first_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id, username, first_name, last_name',
             [username, hashedPassword, first_name, last_name]
         );
         const newUser = result.rows[0];
@@ -22,7 +22,7 @@ async function createUser (user) {
     }
 };
 
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
     console.log('hitting register user');
     console.log('req.body: ' + JSON.stringify(req.body));
     const { username, password, first_name, last_name } = req.body;

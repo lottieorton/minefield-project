@@ -24,9 +24,22 @@ jest.mock('../components/Filter.js', () => {
     }
 });
 
-jest.mock('../components/presentational/GameBoard.js', () => {
-    return function MockedGameBoard(props) {
-        return (
+const mockGameBoardComponent = jest.fn();
+jest.mock('../components/presentational/GameBoard.js', () => { 
+    return function MockedGameBoard(props) { 
+        return mockGameBoardComponent(props); 
+    }; 
+});
+
+jest.mock('../components/functions/saveGame.js', () => ({saveGame: jest.fn()}))
+
+import GameSelection from "../components/GameSelection.js";
+const { createBoard } = require('../components/functions/gameBoardCreation.js');
+const { saveGame } = require('../components/functions/saveGame.js');
+
+describe('checkClickedValue logic', () => {
+    beforeEach(() => {
+        mockGameBoardComponent.mockImplementation((props) => (
             <div data-testid="mock-game-board">
                     <span data-testid="mock-props">
                         RowProp: {props.boardRows} | ColProp: {props.boardCols} | PlayingBoardProp: {String(props.playingGameBoard)} | CellClickProp: {props.onCellClick} | GameOverProp: {String(props.gameOver)} | GameWonProp: {String(props.gameWon)}
@@ -44,19 +57,15 @@ jest.mock('../components/presentational/GameBoard.js', () => {
                         Click Cell 1-1
                     </button>
             </div>
-        )
-    }
-});
-import GameSelection from "../components/GameSelection.js";
-const { createBoard } = require('../components/functions/gameBoardCreation.js');
+        ))
+    });
 
-describe('checkClickedValue logic', () => {
     const createTestGame = () => {
         const mockBoard = [
             ['*', 1],
             [1, 1]
         ];
-    
+
         createBoard.mockReturnValue(mockBoard);
 
         render(
@@ -73,10 +82,13 @@ describe('checkClickedValue logic', () => {
     it('updates gameOver to true if mine clicked', async () => {
         //arrange
         createTestGame();
-        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
-            ok: true,
-            json: async () => ({ success: true }),
-        });
+        const mockSavedScore = [{
+            game_id: 1,
+            user_id: 1,
+            difficulty: "easy",
+            win: false
+        }]
+        saveGame.mockReturnValue(mockSavedScore);
         //action
         const mineButton = screen.getByRole('button', { name: /click mine/i });
         fireEvent.click(mineButton);
@@ -84,26 +96,21 @@ describe('checkClickedValue logic', () => {
         //assert
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent(/gameoverprop: true/i);
-        await waitFor(() => {
-            expect(fetchSpy).toHaveBeenCalledWith(
-                expect.stringContaining('/scores/saveScore'),
-                expect.objectContaining({
-                    method: 'POST',
-                    body: expect.stringContaining('"win":false')
-                })
-            );
-        });
-
-        fetchSpy.mockRestore();
+        expect(saveGame).toHaveBeenCalledWith('easy', false);
+        //clean up
+        saveGame.mockRestore();
     });
 
-    it('correctly sets gameWon = true when all correct cells are clicked, otherwise gameOver and gameWon remain false', async () => {
+    it('correctly sets gameWon = true when all correct cells are clicked', async () => {
         //arrange
         createTestGame();
-        const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
-            ok: true,
-            json: async () => ({ success: true }),
-        });
+        const mockSavedScore = [{
+            game_id: 1,
+            user_id: 1,
+            difficulty: "easy",
+            win: true
+        }]
+        saveGame.mockReturnValue(mockSavedScore);
         //action
         const cell01 = screen.getByRole('button', { name: /click cell 0-1/i });
         const cell10 = screen.getByRole('button', { name: /click cell 1-0/i });
@@ -116,17 +123,9 @@ describe('checkClickedValue logic', () => {
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent(/gamewonprop: true/i);
         expect(gameBoard).toHaveTextContent(/gameoverprop: false/i);
-        await waitFor(() => {
-            expect(fetchSpy).toHaveBeenCalledWith(
-                expect.stringContaining('/scores/saveScore'),
-                expect.objectContaining({
-                    method: 'POST',
-                    body: expect.stringContaining('"win":true')
-                })
-            );
-        });
-
-        fetchSpy.mockRestore();
+        expect(saveGame).toHaveBeenCalledWith('easy', true);
+        //clean up
+        saveGame.mockRestore();
     })
      
     //NON-CORRECTLY MOCKED TESTS -- MORE END TO END TEST
@@ -181,7 +180,6 @@ describe('Check handleFilterChange logic', () => {
         createTestGame();
         //action
         //screen.debug();
-        const filter = screen.getByRole('combobox', {name: /mock-filter/i});
         const startGameButton = screen.getByText(/Start Game Now/i);
         fireEvent.click(startGameButton);
         
@@ -222,6 +220,28 @@ describe('Check handleFilterChange logic', () => {
 });
 
 describe('Check handleClick logic', () => {
+    beforeEach(() => {
+        mockGameBoardComponent.mockImplementation((props) => (
+            <div data-testid="mock-game-board">
+                    <span data-testid="mock-props">
+                        RowProp: {props.boardRows} | ColProp: {props.boardCols} | PlayingBoardProp: {String(props.playingGameBoard)} | CellClickProp: {props.onCellClick} | GameOverProp: {String(props.gameOver)} | GameWonProp: {String(props.gameWon)}
+                    </span>
+                    <button data-testid="mock-mine-click" onClick={() => props.onCellClick(0,0)}>
+                        Click Mine
+                    </button>
+                    <button data-testid="mock-cell-0-1-click" onClick={() => props.onCellClick(0,1)}>
+                        Click Cell 0-1
+                    </button>
+                    <button data-testid="mock-cell-1-0-click" onClick={() => props.onCellClick(1,0)}>
+                        Click Cell 1-0
+                    </button>
+                    <button data-testid="mock-cell-1-1-click" onClick={() => props.onCellClick(1,1)}>
+                        Click Cell 1-1
+                    </button>
+            </div>
+        ))
+    });
+
     const createTestGame = () => {
         const mockBoard = [
             ['*', 1],
@@ -296,6 +316,28 @@ describe('Check handleClick logic', () => {
 });
 
 describe('Check handleCellClick logic', () => {
+    beforeEach(() => {
+        mockGameBoardComponent.mockImplementation((props) => (
+            <div data-testid="mock-game-board">
+                    <span data-testid="mock-props">
+                        RowProp: {props.boardRows} | ColProp: {props.boardCols} | PlayingBoardProp: {String(props.playingGameBoard)} | CellClickProp: {props.onCellClick} | GameOverProp: {String(props.gameOver)} | GameWonProp: {String(props.gameWon)}
+                    </span>
+                    <button data-testid="mock-mine-click" onClick={() => props.onCellClick(0,0)}>
+                        Click Mine
+                    </button>
+                    <button data-testid="mock-cell-0-1-click" onClick={() => props.onCellClick(0,1)}>
+                        Click Cell 0-1
+                    </button>
+                    <button data-testid="mock-cell-1-0-click" onClick={() => props.onCellClick(1,0)}>
+                        Click Cell 1-0
+                    </button>
+                    <button data-testid="mock-cell-1-1-click" onClick={() => props.onCellClick(1,1)}>
+                        Click Cell 1-1
+                    </button>
+            </div>
+        ))
+    });
+
     const createTestGame = () => {
         const mockBoard = [
             ['*', 1],
@@ -318,6 +360,13 @@ describe('Check handleCellClick logic', () => {
     it('if gameOver is true, check subsequent clicks aren`t counted', async () => {
         //arrange
         createTestGame();
+        const mockSavedScore = [{
+            game_id: 1,
+            user_id: 1,
+            difficulty: "easy",
+            win: false
+        }]
+        saveGame.mockReturnValue(mockSavedScore);
         //action
         const mineButton = screen.getByRole('button', { name: /click mine/i });
         fireEvent.click(mineButton);
@@ -327,12 +376,25 @@ describe('Check handleCellClick logic', () => {
         fireEvent.click(cell01);
         //screen.debug();
         //assert
-        expect(gameBoard).toHaveTextContent('PlayingBoardProp: *,,,');
+        await waitFor(() => {
+            expect(saveGame).toHaveBeenCalledTimes(1);
+            expect(saveGame).toHaveBeenCalledWith('easy', false);
+            expect(gameBoard).toHaveTextContent('PlayingBoardProp: *,,,');
+        });
+        //clean up
+        saveGame.mockRestore();
     });
 
     it('if gameWon is true, check subsequent clicks aren`t counted', async () => {
         //arrange
         createTestGame();
+        const mockSavedScore = [{
+            game_id: 1,
+            user_id: 1,
+            difficulty: "easy",
+            win: true
+        }]
+        saveGame.mockReturnValue(mockSavedScore);
         //action
         const cell01 = screen.getByRole('button', { name: /click cell 0-1/i });
         const cell10 = screen.getByRole('button', { name: /click cell 1-0/i });
@@ -347,9 +409,13 @@ describe('Check handleCellClick logic', () => {
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent(/gamewonprop: true/i);
         expect(gameBoard).toHaveTextContent('PlayingBoardProp: ,1,1,1');
+        expect(saveGame).toHaveBeenCalledTimes(1);
+        expect(saveGame).toHaveBeenCalledWith('easy', true);
+        //clean up
+        saveGame.mockRestore();
     });
 
-    it('updates playingGameBoard when a cell if clicked', async () => {
+    it('updates playingGameBoard when a cell with a number > 0 is clicked and game is still ongoing', async () => {
         //arrange
         createTestGame();
         //action
@@ -359,5 +425,149 @@ describe('Check handleCellClick logic', () => {
         //assert
         const gameBoard = await screen.findByTestId('mock-game-board');
         expect(gameBoard).toHaveTextContent('PlayingBoardProp: ,1,,');
+        expect(gameBoard).toHaveTextContent(/gamewonprop: false/i);
+        expect(gameBoard).toHaveTextContent(/gameoverprop: false/i);
+    });
+
+    it('starting a new game resets gameWon', async () => {
+        //arrange
+        createTestGame();
+        const mockSavedScore = [{
+            game_id: 1,
+            user_id: 1,
+            difficulty: "easy",
+            win: true
+        }]
+        saveGame.mockReturnValue(mockSavedScore);
+        //action
+        const cell01 = screen.getByRole('button', { name: /click cell 0-1/i });
+        const cell10 = screen.getByRole('button', { name: /click cell 1-0/i });
+        const cell11 = screen.getByRole('button', { name: /click cell 1-1/i });
+        const startGameButton = screen.getByRole('button', { name: /start game now/i });
+        fireEvent.click(cell01);
+        fireEvent.click(cell10);
+        fireEvent.click(cell11);
+        const gameBoard = await screen.findByTestId('mock-game-board');
+        expect(gameBoard).toHaveTextContent(/gamewonprop: true/i);
+        expect(gameBoard).toHaveTextContent('PlayingBoardProp: ,1,1,1');
+        fireEvent.click(startGameButton);
+        //screen.debug();
+        //assert
+        expect(gameBoard).toHaveTextContent(/gamewonprop: false/i);
+        expect(gameBoard).toHaveTextContent('PlayingBoardProp: ,,,');
+        //clean up
+        saveGame.mockRestore();
+    });
+
+    it('starting a new game resets gameOver', async () => {
+        //arrange
+        createTestGame();
+        const mockSavedScore = [{
+            game_id: 1,
+            user_id: 1,
+            difficulty: "easy",
+            win: false
+        }];
+        saveGame.mockReturnValue(mockSavedScore);
+        //action
+        const mineCell = screen.getByRole('button', { name: /click mine/i });
+        const startGameButton = screen.getByRole('button', { name: /start game now/i });
+        fireEvent.click(mineCell);
+        const gameBoard = await screen.findByTestId('mock-game-board');
+        expect(gameBoard).toHaveTextContent(/gameoverprop: true/i);
+        expect(gameBoard).toHaveTextContent('PlayingBoardProp: *,,,');
+        fireEvent.click(startGameButton);
+        //screen.debug();
+        //assert
+        expect(gameBoard).toHaveTextContent(/gameoverprop: false/i);
+        expect(gameBoard).toHaveTextContent('PlayingBoardProp: ,,,');
+    });
+
+    it('if a 0 is clicked, all 0s and surrounding cells are recursively uncovered', async () => {
+        //arrange
+        mockGameBoardComponent.mockImplementation((props) => (
+            <div data-testid="mock-game-board">
+                <span data-testid="mock-props">
+                    RowProp: {props.boardRows} | ColProp: {props.boardCols} | PlayingBoardProp: {String(props.playingGameBoard)} | CellClickProp: {props.onCellClick} | GameOverProp: {String(props.gameOver)} | GameWonProp: {String(props.gameWon)}
+                </span>
+                <button data-testid="mock-cell-0-0-click" onClick={() => props.onCellClick(0,0)}>
+                    Click Cell 0-0
+                </button>
+                <button data-testid="mock-mine-1-click" onClick={() => props.onCellClick(0,1)}>
+                    Click Mine 1
+                </button>
+                <button data-testid="mock-cell-0-2-click" onClick={() => props.onCellClick(0,2)}>
+                    Click Cell 0-2
+                </button>
+                <button data-testid="mock-cell-0-3-click" onClick={() => props.onCellClick(0,3)}>
+                    Click Cell 0-3
+                </button>
+                <button data-testid="mock-mine-2-click" onClick={() => props.onCellClick(1,0)}>
+                    Click Mine 2
+                </button>
+                <button data-testid="mock-cell-1-1-click" onClick={() => props.onCellClick(1,1)}>
+                    Click Cell 1-1
+                </button>
+                <button data-testid="mock-cell-1-2-click" onClick={() => props.onCellClick(1,2)}>
+                    Click Cell 1-2
+                </button>
+                <button data-testid="mock-cell-1-3-click" onClick={() => props.onCellClick(1,3)}>
+                    Click Cell 1-3
+                </button>
+                <button data-testid="mock-cell-2-0-click" onClick={() => props.onCellClick(2,0)}>
+                    Click Cell 2-0
+                </button>
+                <button data-testid="mock-cell-2-1-click" onClick={() => props.onCellClick(2,1)}>
+                    Click Cell 2-1
+                </button>
+                <button data-testid="mock-cell-2-2-click" onClick={() => props.onCellClick(2,2)}>
+                    Click Cell 2-2
+                </button>
+                <button data-testid="mock-cell-2-3-click" onClick={() => props.onCellClick(2,3)}>
+                    Click Cell 2-3
+                </button>
+                <button data-testid="mock-cell-3-0-click" onClick={() => props.onCellClick(3,0)}>
+                    Click Cell 3-0
+                </button>
+                <button data-testid="mock-cell-3-1-click" onClick={() => props.onCellClick(3,1)}>
+                    Click Cell 3-1
+                </button>
+                <button data-testid="mock-cell-3-2-click" onClick={() => props.onCellClick(3,2)}>
+                    Click Cell 3-2
+                </button>
+                <button data-testid="mock-cell-3-3-click" onClick={() => props.onCellClick(3,3)}>
+                    Click Cell 3-3
+                </button>
+            </div>
+        ));
+        
+        const mockBoard = [
+            [2, '*', 1, 0],
+            ['*', 2, 1, 0],
+            [1, 1, 0, 0],
+            [0, 0, 0, 0]
+        ];
+        const postClickMockBoard = [
+            ['', '', 1, 0],
+            ['', 2, 1, 0],
+            [1, 1, 0, 0],
+            [0, 0, 0, 0]
+        ];
+        createBoard.mockReturnValue(mockBoard);
+        render(
+            <MemoryRouter>
+                <GameSelection />
+            </MemoryRouter>
+        );
+        //Click Start Game button
+        const startGameButton = screen.getByText(/Start Game Now/i);
+        fireEvent.click(startGameButton);
+        //action
+        const cell03 = screen.getByRole('button', { name: /click cell 0-3/i });
+        fireEvent.click(cell03);
+        //screen.debug();
+        //assert
+        const gameBoard = await screen.findByTestId('mock-game-board');
+        expect(gameBoard).toHaveTextContent('PlayingBoardProp: ,,1,0,,2,1,0,1,1,0,0,0,0,0,0');
     });
 });

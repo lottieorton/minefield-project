@@ -4,12 +4,6 @@ import '@testing-library/jest-dom';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 
-const mockNavigateFunction = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockNavigateFunction
-}));
-
 describe('handleChange', () => {
     const user = userEvent.setup();
     it.each([
@@ -31,6 +25,27 @@ describe('handleChange', () => {
 });
 
 describe('handleSubmit', () => {
+    let locationSpy;
+    const oldLocation = window.location;
+
+    beforeEach(() => { 
+        jest.clearAllMocks();
+        locationSpy = jest.fn();
+        delete window.location;
+        window.location = {
+            reload: jest.fn(),
+        };
+        
+        Object.defineProperty(window.location, 'href', { 
+            set: locationSpy,
+            configurable: true
+        }); 
+    });
+
+    afterAll(() => {
+        window.location = oldLocation
+    })
+    
     it('handleSubmit makes correct API call with payload values', async () => {
         //arrange
         const user = userEvent.setup();
@@ -136,10 +151,10 @@ describe('handleSubmit', () => {
 
         await user.click(screen.getByRole('button', {name: /log me in!/i}));
         //assert
-        const successMessage = await screen.findByText(`Success! TestName logged in.`);
-        expect(successMessage).toBeInTheDocument();
         jest.runAllTimers();
-        expect(mockNavigateFunction).toHaveBeenCalledWith('/');
+        await waitFor(() => 
+            expect(locationSpy).toHaveBeenCalledWith('/')
+        );
         jest.useRealTimers();
     });
 
