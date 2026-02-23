@@ -28,6 +28,7 @@ const gameBoardRouter = require('./routes/gameBoard.js');
 const usersRouter = require('./routes/users.js');
 const scoreRouter = require('./routes/scores.js');
 //app.use(express.static('public')); NOT NEEDED
+app.set('trust proxy', 1);
 app.use(cors({ credentials: true, origin: FRONTEND_BASE_URL })); //allows credentials request
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}));
@@ -39,9 +40,12 @@ app.use(
     session({
         base: '/',
         secret: sessionSecret,
-        cookie: {maxAge: 1000*60*60*24, secure: false, sameSite: 'lax'}, //secure: true, HTTPS only, set sameSite to 'none when set secure back to true
-        resave: true,
-        saveUninitialized: false
+        cookie: {maxAge: 1000*60*60*24, secure: true, sameSite: 'none'}, 
+        //For localhost: secure: false, sameSite: 'lax'
+        //secure: true, HTTPS only, set sameSite to 'none when set secure back to true
+        resave: false,
+        saveUninitialized: false,
+        proxy: true
     })
 );
 
