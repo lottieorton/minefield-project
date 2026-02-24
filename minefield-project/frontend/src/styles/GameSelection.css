@@ -79,10 +79,10 @@
 .cell.revealed:active {
     background-color: #c0c0c0;
     border-color: #c0c0c0;
-};
+}
 
 .cell:active {
     background-color: #c0c0c0;
     border-style: none;
     border-color: #808080;
-};
+}

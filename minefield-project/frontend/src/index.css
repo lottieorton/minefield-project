@@ -12,24 +12,10 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'User Input Font';
-  src: url('/fonts/Smooch_Sans/SmoochSans-VariableFont_wght.ttf') format('truetype-variations'),
-        url('/fonts/Smooch_Sans/SmoochSans-VariableFont_wght.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 body {
   margin: 0;
   font-family: 'Minesweeper Font', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: azure;
-}
-
-code {
-  /*font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;*/
 }
