@@ -1,8 +1,10 @@
 @font-face {
   font-family: 'User Input Font';
-  src: url('/fonts/Smooch_Sans/SmoochSans-VariableFont_wght.ttf') format('truetype');
-  font-weight: bold;
+  src: url('/fonts/Smooch_Sans/SmoochSans-VariableFont_wght.ttf') format('truetype-variations'),
+        url('/fonts/Smooch_Sans/SmoochSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
 
 .user-form-component {
@@ -18,6 +20,7 @@
     color: white;
     border-radius: 1rem;
     gap: 1.5rem;
+    font-weight: bold;
 }
 
 .form {
