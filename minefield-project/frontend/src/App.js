@@ -15,7 +15,7 @@ import Profile from './components/Profile.js';
 //to be updated with the correct URL when uploaded to Render
 export const API_BASE_URL = 
     process.env.NODE_ENV === 'production' 
-        ? 'https://ecommerceapi-4-0b65.onrender.com'
+        ? 'https://minefield-project.onrender.com'
         : 'http://localhost:4001';
 
 

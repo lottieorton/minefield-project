@@ -14,11 +14,11 @@ loadEnv();
 //need to update to ENV
 const FRONTEND_BASE_URL = 
      process.env.NODE_ENV === 'production' 
-        ? 'https://ecommerceapi-5-iktx.onrender.com'
+        ? 'https://minefield-project-frontend.onrender.com'
         : 'http://localhost:3000';
 const API_BASE_URL = 
      process.env.NODE_ENV === 'production' 
-        ? 'https://ecommerceapi-5-iktx.onrender.com'
+        ? 'https://minefield-project.onrender.com'
         : 'http://localhost:4001';
 const cors = require('cors');
 const GoogleStrategy = require('passport-google-oidc');
