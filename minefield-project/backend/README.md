@@ -52,6 +52,7 @@ Create a `.env` file in your backend directory to manage your secrets:
 NODE_ENV=production
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+DATABASE_URL=your_db_url
 ```
 
 ---
