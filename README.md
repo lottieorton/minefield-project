@@ -8,11 +8,13 @@ A robust, fullstack implementation of the classic Minesweeper game. This project
 
 **App Preview:**
 
+<p align="center">
 <img
-src="./minefield-project/frontend/src/assets/minefield-screenshot.png"
+src="./minefield-project/docs/images/minefield-screenshot.png"
 alt="Minefield Gameplay"
-width= "400px"
+width= "80%"
 />
+</p>
 
 ---
 
@@ -28,6 +30,14 @@ To modernize the classic Minesweeper experience while building a secure, full-st
 - **Backend (Node.js & Express):** Lightweight, event-driven JavaScript backend sharing logic patterns with the frontend.
 - **Database (PostgreSQL):** Structured relational storage ideal for query consistency, user accounts, and score histories.
 - **Auth (Google OAuth 2.0 & Sessions):** Provides flexiblity with custom local sessions and quick third-party sign-ins.
+
+### Database Schema
+
+<img
+src="./minefield-project/docs/images/ERD.png"
+alt="Entity Relationship Diagram"
+width= "100%"
+/>
 
 ---
 
@@ -64,11 +74,41 @@ To modernize the classic Minesweeper experience while building a secure, full-st
 
 Create a `.env` file in your backend directory to manage your secrets:
 
+| Variable               | Description                       | Example / Default                           |
+| :--------------------- | :-------------------------------- | :------------------------------------------ |
+| `NODE_ENV`             | Application environment mode      | `development` / `production`                |
+| `GOOGLE_CLIENT_ID`     | Google OAuth Client ID            | `your_google_client_id`                     |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret        | `your_google_client_secret`                 |
+| `DATABASE_URL`         | Hosted database connection string | `your_db_url`                               |
+| `DB_HOST`              | Database host address             | `localhost`                                 |
+| `DB_PORT`              | Database port number              | `5432` (PostgreSQL)                         |
+| `DB_USER`              | Database connection username      | `postgres`                                  |
+| `DB_NAME`              | Name of the database              | `minesweeper`                               |
+| `DB_PASSWORD`          | Database connection password      | `yourPassword`                              |
+| `FRONTEND_BASE_URL`    | Base URL of your frontend app     | `http://localhost:3000` (or production URL) |
+| `API_BASE_URL`         | Base URL of your backend API      | `http://localhost:4001` (or production URL) |
+| `PORT`                 | Port number for the server        | `4001`                                      |
+
+### Example `.env` file
+
 ```env
 NODE_ENV=production
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Variables for using a hosted database
 DATABASE_URL=your_db_url
+
+# Variables for running a local PSQL server
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=minesweeper
+DB_PASSWORD=yourPassword
+DB_PORT=5432
+
+FRONTEND_BASE_URL=http://localhost:3000
+API_BASE_URL=http://localhost:4001
+PORT=4001
 ```
 
 ---
