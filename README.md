@@ -111,6 +111,18 @@ API_BASE_URL=http://localhost:4001
 PORT=4001
 ```
 
+### Optional frontend .env for providing a specific backend URL
+
+| Variable                 | Description                  | Example / Default                           |
+| :----------------------- | :--------------------------- | :------------------------------------------ |
+| `REACT_APP_API_BASE_URL` | Base URL of your backend API | `http://localhost:4001` (or production URL) |
+
+### Example frontend `.env` file
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:4001
+```
+
 ---
 
 ### 2. Backend setup
