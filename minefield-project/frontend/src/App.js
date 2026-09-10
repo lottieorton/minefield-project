@@ -13,9 +13,6 @@ import Login from "./components/Login.js";
 import ScorePage from "./components/ScorePage.js";
 import Profile from "./components/Profile.js";
 
-// console.log(`Env variable ${process.env.NODE_ENV}`);
-// console.log(`Env variable render ${process.env.REACT_APP_API_BASE_URL}`);
-
 export const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:4001";
 

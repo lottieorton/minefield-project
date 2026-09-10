@@ -60,13 +60,11 @@ passport.use(
     async function (issuer, profile, cb) {
       try {
         //check for existing federated credential
-        console.log("issuer is: " + issuer);
-        console.log("profile is: " + JSON.stringify(profile));
+
         const credResult = await db.pool.query(
           "SELECT * FROM federated_credentials WHERE provider = $1 AND subject = $2",
           [issuer, profile.id],
         );
-        console.log(`credResult is:` + JSON.stringify(credResult));
 
         const cred = credResult.rows[0];
 
@@ -81,7 +79,6 @@ passport.use(
             ],
           );
           const newUser = userInsertResult.rows[0];
-          console.log("newUser: " + JSON.stringify(newUser));
           await db.pool.query(
             "INSERT INTO federated_credentials (user_id, provider, subject) VALUES ($1, $2, $3)",
             [newUser.id, issuer, profile.id],
@@ -171,17 +168,14 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log("deserializing user: " + id);
   try {
     const result = await db.pool.query("SELECT * FROM users WHERE id = $1", [
       id,
     ]);
     const user = result.rows[0];
     if (user) {
-      console.log("req.user deserialize:" + user);
       done(null, user);
     } else {
-      console.log("req.user deserialize: not found");
       done(null, false);
     }
   } catch (error) {
@@ -191,18 +185,11 @@ passport.deserializeUser(async (id, done) => {
 
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log(`attempting to login post endpoint with`);
-    console.log(
-      `autentication done error is: ${JSON.stringify(err)} user is ${JSON.stringify(user)}, info is: ${JSON.stringify(info)}`,
-    );
-
     if (err) {
-      console.log(`authentication failed with error`);
       return next(err);
     }
     if (!user) {
       // Handle failure response here
-      console.log(`autentication failed with no user`);
 
       return res
         .status(401)
@@ -210,16 +197,13 @@ app.post("/login", (req, res, next) => {
     }
     //establishes the session and calls passport.serializeUser
     req.login(user, (err) => {
-      console.log("Logged in supposedly with user:" + JSON.stringify(user));
       req.session.save((saveErr) => {
-        console.log("SAVING REQUEST SESSION");
         if (saveErr) {
           console.error("Session save error after login:", saveErr);
           return next(saveErr);
         }
         // session is now saved, and the cookie is set
 
-        console.log(`Hello ${user.first_name} logged in as ${user.username}`);
         // This response carries the Set-Cookie header.
 
         return res.status(200).json({
@@ -236,13 +220,8 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/logout", (req, res, next) => {
-  console.log(
-    "Is logout mocked?",
-    req.logout.toString().includes("errorMessage"),
-  );
   req.logout((err) => {
     if (err) {
-      console.log("error logging out");
       return next(err);
     }
     //optional but deleting the session and clearling the cookie
@@ -251,7 +230,6 @@ app.get("/logout", (req, res, next) => {
         return next(err);
       }
       res.clearCookie("connect.sid");
-      console.log("Logged out");
       //res.redirect('/');
       return res.status(200).json({
         message: "Successfully logged out",
@@ -278,7 +256,6 @@ app.use("/scores", scoreRouter);
 
 //error-handling middleware
 app.use((err, req, res, next) => {
-  console.log("LOGOUT ERROR DEBUG:", err);
   const status = err.status || 500;
   res.status(status).send(err.message);
 });
@@ -298,7 +275,5 @@ module.exports = {
 
 /* istanbul ignore if */
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-  });
+  app.listen(PORT, () => {});
 }
