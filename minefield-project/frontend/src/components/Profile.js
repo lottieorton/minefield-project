@@ -1,5 +1,4 @@
 import "../styles/Scores.css";
-//import '../styles/Profile.css';
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../App.js";

@@ -56,7 +56,6 @@ export default function Nav() {
       }
 
       window.location.href = "/";
-      //navigate('/');
     } catch (error) {
       console.error("Log out error:", error.message);
     }

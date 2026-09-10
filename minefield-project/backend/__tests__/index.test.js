@@ -5,8 +5,8 @@ const express = require("express");
 const passport = require("passport");
 const sinon = require("sinon");
 
-//NOTE WHEN TESTING WITH HTTPS SECURE - MAY NEED TO INCLUDE the below line as cookie won't be sent over std non-secure supertest connection
-//request(app).post('/login').set('X-Forwarded-Proto', 'https')
+// NOTE - when testing with HTTPS, may need to include the below line as cookie won't be sent over std non-secure supertest connection
+// request(app).post('/login').set('X-Forwarded-Proto', 'https')
 
 jest.mock("../queries/queries.js", () => ({
   pool: {
@@ -15,7 +15,6 @@ jest.mock("../queries/queries.js", () => ({
 }));
 
 const db = require("../queries/queries.js");
-// const { app, sessionSecret, getUserByUsername, authenticateUser } = require('../index.js');
 const indexModule = require("../index.js");
 const app = indexModule.app;
 const sessionSecret = indexModule.sessionSecret;
@@ -101,19 +100,12 @@ describe("API base url logic", () => {
 });
 
 describe("backend configuration", () => {
-  /* DONT NEED THE STATIC FILES from /public
-    it('should serve static files from /public', async () => {
-        const response = await request(app).get('/index.js');
-        expect(response.status).toBe(405);
-    });*/
-
   it("a random sessionSecret of length 32 in base 64 is generated", () => {
     //assert
     expect(sessionSecret.length).toBe(44);
   });
 
   it("bodyParser.json - enables JSON data passed to requests to be read", async () => {
-    //TEST A JSON RESPONSE IS ABLE TO BE UNPACKED - POST REQUEST
     //arrange
     const password = "P@ssword";
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -249,7 +241,7 @@ describe("backend configuration", () => {
     const logoutResponse = await agent.get(`/logout`); //call logout endpoint
     expect(logoutResponse.status).toBe(200);
     expect(logoutResponse.body.message).toBe("Successfully logged out");
-    //try to access /me should fail
+    //attempt to access /me should fail
     const profileResponse = await agent.get("/me");
     expect(profileResponse.status).toBe(401);
   });
@@ -340,11 +332,6 @@ describe("getByUsername", () => {
 describe("authenticateUser", () => {
   let done;
 
-  // jest.mock('bcrypt');
-  // jest.mock('../index', () => ({
-  //     ...jest.requireActual('../index'), // Keep other exports like authenticateUser
-  //     getUserByUsername: jest.fn()
-  // }));
   beforeEach(() => {
     done = jest.fn();
     jest.clearAllMocks();
@@ -366,7 +353,6 @@ describe("authenticateUser", () => {
       rows: [mockUser],
     });
 
-    //const getUserByUsernameSpy = jest.spyOn(indexModule, 'getUserByUsername').mockResolvedValue(mockUser);
     const bcryptSpy = jest.spyOn(bcrypt, "compare").mockResolvedValue(true);
     //action
     await authenticateUser(mockUser.username, "P@ssword", done);
@@ -385,7 +371,6 @@ describe("authenticateUser", () => {
       rows: [mockUser],
     });
 
-    //const getUserByUsernameSpy = jest.spyOn(indexModule, 'getUserByUsername').mockResolvedValue(mockUser);
     const bcryptSpy = jest.spyOn(bcrypt, "compare").mockResolvedValue(false);
     //action
     await authenticateUser(mockUser.username, "P@ssword", done);
@@ -406,8 +391,6 @@ describe("authenticateUser", () => {
       rows: [],
     });
 
-    //const getUserByUsernameSpy = jest.spyOn(indexModule, 'getUserByUsername').mockResolvedValue(undefined);
-    //const bcryptSpy = jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
     //action
     await authenticateUser(mockUser.username, "P@ssword", done);
     //assert
@@ -428,7 +411,7 @@ describe("authenticateUser", () => {
 });
 
 describe("/login", () => {
-  //SETTING UP SESSION AND DESERIALISE BEING CALLED TESTED ABOVE
+  // Setting up session and deserialize being called tested above
   it("successfully logins in with correct login details", async () => {
     //arrange
     const password = "P@ssword";
@@ -543,7 +526,7 @@ describe("/login", () => {
 
 describe("/logout", () => {
   it("req.logout called and destroys session, clears cookie, returns res.status(200) and json", async () => {
-    //SESSION DESTROYED TESTED EARLIER
+    //Session destroyed tested earlier
     //arrange
     const agent = request.agent(app); //agent is needed to act like a browser and save the cookie
     const password = "P@ssword";
@@ -594,6 +577,4 @@ describe("/logout", () => {
     expect(logoutResponse.status).toBe(500);
     expect(logoutResponse.text).toBe(errorMessage);
   });
-
-  //NOT TESTING LOGOUT ERROR MESSAGES AS SET UP TO BE DIFFICULT TO TEST
 });

@@ -12,7 +12,6 @@ const inputValidation = (req, res, next) => {
       }
     });
 
-    //next(errorMessage);
     return res.status(500).json({
       msg: errorMessage
         ? errorMessage

@@ -25,7 +25,7 @@ const createBoard = (difficulty) => {
 
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
-      //iterating around each of the neightbouring cells
+      // Iterate around each of the neightbouring cells
       if (board[i][j] === "*") continue;
       for (let k = -1; k <= 1; k++) {
         for (let l = -1; l <= 1; l++) {

@@ -1,4 +1,3 @@
-//const express = require('express');
 const { createBoard } = require("../functions/game.js");
 
 const createGameBoard = (req, res) => {

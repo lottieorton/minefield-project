@@ -1,190 +1,243 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider, createMemoryRouter } from 'react-router-dom';
-import App from '../App.js'
+import { render, screen, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+  createMemoryRouter,
+} from "react-router-dom";
+import App from "../App.js";
 
-jest.mock('../components/Header.js', () => {
-    const { Outlet } = require('react-router-dom');
-    const HeaderComponent = () => {
-      return <div data-testid="mockHeaderComponent">
-          Mock Header Component
-          <Outlet />
+jest.mock("../components/Header.js", () => {
+  const { Outlet } = require("react-router-dom");
+  const HeaderComponent = () => {
+    return (
+      <div data-testid="mockHeaderComponent">
+        Mock Header Component
+        <Outlet />
       </div>
-    };
-    return {
-      __esModule: true,
-      default: HeaderComponent,
-      Header: HeaderComponent
-    };
+    );
+  };
+  return {
+    __esModule: true,
+    default: HeaderComponent,
+    Header: HeaderComponent,
+  };
 });
-jest.mock('../components/Home.js', () => ({
+jest.mock("../components/Home.js", () => ({
   __esModule: true,
-  //Handles import Home from  
+  //Handles import Home from
   default: () => <div data-testid="mockHomeComponent">Mock Home Component</div>,
   //handles import { Home } from
-  Home: () => <div data-testid="mockHomeComponent">Mock Home Component</div>
+  Home: () => <div data-testid="mockHomeComponent">Mock Home Component</div>,
 }));
-jest.mock('../components/GameSelection.js', () => ({
-  __esModule: true,  
-  default: () => <div data-testid="mockGameSelectionComponent">Mock GameSelection Component</div>,
-  GameSelection: () => <div data-testid="mockGameSelectionComponent">Mock GameSelection Component</div>
+jest.mock("../components/GameSelection.js", () => ({
+  __esModule: true,
+  default: () => (
+    <div data-testid="mockGameSelectionComponent">
+      Mock GameSelection Component
+    </div>
+  ),
+  GameSelection: () => (
+    <div data-testid="mockGameSelectionComponent">
+      Mock GameSelection Component
+    </div>
+  ),
 }));
-jest.mock('../components/Register.js', () => ({
-  __esModule: true,  
-  default: () => <div data-testid="mockRegisterComponent">Mock Register Component</div>,
-  Register: () => <div data-testid="mockRegisterComponent">Mock Register Component</div>
+jest.mock("../components/Register.js", () => ({
+  __esModule: true,
+  default: () => (
+    <div data-testid="mockRegisterComponent">Mock Register Component</div>
+  ),
+  Register: () => (
+    <div data-testid="mockRegisterComponent">Mock Register Component</div>
+  ),
 }));
-jest.mock('../components/Login.js', () => ({
-  __esModule: true,  
-  default: () => <div data-testid="mockLoginComponent">Mock Login Component</div>,
-  Login: () => <div data-testid="mockLoginComponent">Mock Login Component</div>
+jest.mock("../components/Login.js", () => ({
+  __esModule: true,
+  default: () => (
+    <div data-testid="mockLoginComponent">Mock Login Component</div>
+  ),
+  Login: () => <div data-testid="mockLoginComponent">Mock Login Component</div>,
 }));
-jest.mock('../components/Profile.js', () => ({
-  __esModule: true,  
-  default: () => <div data-testid="mockProfileComponent">Mock Profile Component</div>,
-  Profile: () => <div data-testid="mockProfileComponent">Mock Profile Component</div>
+jest.mock("../components/Profile.js", () => ({
+  __esModule: true,
+  default: () => (
+    <div data-testid="mockProfileComponent">Mock Profile Component</div>
+  ),
+  Profile: () => (
+    <div data-testid="mockProfileComponent">Mock Profile Component</div>
+  ),
 }));
 
-describe('App component routing', () => {
+describe("App component routing", () => {
   it('renders the Header and Home component on the root path "/" ', async () => {
     //arrange
-    const MockHeader = require('../components/Header.js').Header;
-    const MockHome = require('../components/Home.js').Home;
-    const MockGameSelection = require('../components/GameSelection.js').GameSelection;
+    const MockHeader = require("../components/Header.js").Header;
+    const MockHome = require("../components/Home.js").Home;
+    const MockGameSelection =
+      require("../components/GameSelection.js").GameSelection;
     //create a router for this test
-    const testRouter = createMemoryRouter(createRoutesFromElements([
-      <Route path = '/' element = { <MockHeader /> } >
-        <Route index element = { <MockHome /> } />
-        <Route path = 'game' element = { <MockGameSelection /> } />
-      </Route>
-    ]), { initialEntries: ['/'] }); //sets the initial URL for this test
+    const testRouter = createMemoryRouter(
+      createRoutesFromElements([
+        <Route path="/" element={<MockHeader />}>
+          <Route index element={<MockHome />} />
+          <Route path="game" element={<MockGameSelection />} />
+        </Route>,
+      ]),
+      { initialEntries: ["/"] },
+    ); //sets the initial URL for this test
     //action
     render(<RouterProvider router={testRouter} />);
     //assert
     await waitFor(() => {
-      const headerComponent = screen.getByTestId('mockHeaderComponent');
-      const homeComponent = screen.getByTestId('mockHomeComponent');
+      const headerComponent = screen.getByTestId("mockHeaderComponent");
+      const homeComponent = screen.getByTestId("mockHomeComponent");
       expect(headerComponent).toBeInTheDocument();
       expect(homeComponent).toBeInTheDocument();
-    })
-    expect(screen.queryByTestId('mockGameSelectionComponent')).not.toBeInTheDocument();
+    });
+    expect(
+      screen.queryByTestId("mockGameSelectionComponent"),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the Header and GameSelection component on the path "/game" ', async () => {
     //arrange
-    const MockHeader = require('../components/Header.js').Header;
-    const MockHome = require('../components/Home.js').Home;
-    const MockGameSelection = require('../components/GameSelection.js').GameSelection;
+    const MockHeader = require("../components/Header.js").Header;
+    const MockHome = require("../components/Home.js").Home;
+    const MockGameSelection =
+      require("../components/GameSelection.js").GameSelection;
     //create a router for this test
-    const testRouter = createMemoryRouter(createRoutesFromElements([
-      <Route path = '/' element = { <MockHeader /> } >
-        <Route index element = { <MockHome /> } />
-        <Route path = 'game' element = { <MockGameSelection /> } />
-      </Route>
-    ]), { initialEntries: ['/game'] }); //sets the initial URL for this test
+    const testRouter = createMemoryRouter(
+      createRoutesFromElements([
+        <Route path="/" element={<MockHeader />}>
+          <Route index element={<MockHome />} />
+          <Route path="game" element={<MockGameSelection />} />
+        </Route>,
+      ]),
+      { initialEntries: ["/game"] },
+    ); //sets the initial URL for this test
     //action
     render(<RouterProvider router={testRouter} />);
     //assert
     await waitFor(() => {
-      const headerComponent = screen.getByTestId('mockHeaderComponent');
-      const gameSelectionComponent = screen.getByTestId('mockGameSelectionComponent');
+      const headerComponent = screen.getByTestId("mockHeaderComponent");
+      const gameSelectionComponent = screen.getByTestId(
+        "mockGameSelectionComponent",
+      );
       expect(headerComponent).toBeInTheDocument();
       expect(gameSelectionComponent).toBeInTheDocument();
-    })
-    expect(screen.queryByTestId('mockHomeComponent')).not.toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("mockHomeComponent")).not.toBeInTheDocument();
   });
 
   it('renders the Header and Register component on the path "/register" ', async () => {
     //arrange
-    const MockHeader = require('../components/Header.js').Header;
-    const MockHome = require('../components/Home.js').Home;
-    const MockRegister = require('../components/Register.js').Register;
+    const MockHeader = require("../components/Header.js").Header;
+    const MockHome = require("../components/Home.js").Home;
+    const MockRegister = require("../components/Register.js").Register;
     //create a router for this test
-    const testRouter = createMemoryRouter(createRoutesFromElements([
-      <Route path = '/' element = { <MockHeader /> } >
-        <Route index element = { <MockHome /> } />
-        <Route path = 'register' element = { <MockRegister /> } />
-      </Route>
-    ]), { initialEntries: ['/register'] }); //sets the initial URL for this test
+    const testRouter = createMemoryRouter(
+      createRoutesFromElements([
+        <Route path="/" element={<MockHeader />}>
+          <Route index element={<MockHome />} />
+          <Route path="register" element={<MockRegister />} />
+        </Route>,
+      ]),
+      { initialEntries: ["/register"] },
+    ); //sets the initial URL for this test
     //action
     render(<RouterProvider router={testRouter} />);
     //assert
     await waitFor(() => {
-      const headerComponent = screen.getByTestId('mockHeaderComponent');
-      const registerComponent = screen.getByTestId('mockRegisterComponent');
+      const headerComponent = screen.getByTestId("mockHeaderComponent");
+      const registerComponent = screen.getByTestId("mockRegisterComponent");
       expect(headerComponent).toBeInTheDocument();
       expect(registerComponent).toBeInTheDocument();
-    })
-    expect(screen.queryByTestId('mockHomeComponent')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('mockLoginComponent')).not.toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("mockHomeComponent")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("mockLoginComponent")).not.toBeInTheDocument();
   });
 
   it('renders the Header and Login component on the path "/login" ', async () => {
     //arrange
-    const MockHeader = require('../components/Header.js').Header;
-    const MockHome = require('../components/Home.js').Home;
-    const MockLogin = require('../components/Login.js').Login;
+    const MockHeader = require("../components/Header.js").Header;
+    const MockHome = require("../components/Home.js").Home;
+    const MockLogin = require("../components/Login.js").Login;
     //create a router for this test
-    const testRouter = createMemoryRouter(createRoutesFromElements([
-      <Route path = '/' element = { <MockHeader /> } >
-        <Route index element = { <MockHome /> } />
-        <Route path = 'login' element = { <MockLogin /> } />
-      </Route>
-    ]), { initialEntries: ['/login'] }); //sets the initial URL for this test
+    const testRouter = createMemoryRouter(
+      createRoutesFromElements([
+        <Route path="/" element={<MockHeader />}>
+          <Route index element={<MockHome />} />
+          <Route path="login" element={<MockLogin />} />
+        </Route>,
+      ]),
+      { initialEntries: ["/login"] },
+    ); //sets the initial URL for this test
     //action
     render(<RouterProvider router={testRouter} />);
     //assert
     await waitFor(() => {
-      const headerComponent = screen.getByTestId('mockHeaderComponent');
-      const loginComponent = screen.getByTestId('mockLoginComponent');
+      const headerComponent = screen.getByTestId("mockHeaderComponent");
+      const loginComponent = screen.getByTestId("mockLoginComponent");
       expect(headerComponent).toBeInTheDocument();
       expect(loginComponent).toBeInTheDocument();
-    })
-    expect(screen.queryByTestId('mockHomeComponent')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('mockRegisterComponent')).not.toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("mockHomeComponent")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("mockRegisterComponent"),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the Header and Profile component on the path "/profile" ', async () => {
     //arrange
-    const MockHeader = require('../components/Header.js').Header;
-    const MockHome = require('../components/Home.js').Home;
-    const MockProfile = require('../components/Profile.js').Profile;
+    const MockHeader = require("../components/Header.js").Header;
+    const MockHome = require("../components/Home.js").Home;
+    const MockProfile = require("../components/Profile.js").Profile;
     //create a router for this test
-    const testRouter = createMemoryRouter(createRoutesFromElements([
-      <Route path = '/' element = { <MockHeader /> } >
-        <Route index element = { <MockHome /> } />
-        <Route path = 'profile' element = { <MockProfile /> } />
-      </Route>
-    ]), { initialEntries: ['/profile'] }); //sets the initial URL for this test
+    const testRouter = createMemoryRouter(
+      createRoutesFromElements([
+        <Route path="/" element={<MockHeader />}>
+          <Route index element={<MockHome />} />
+          <Route path="profile" element={<MockProfile />} />
+        </Route>,
+      ]),
+      { initialEntries: ["/profile"] },
+    ); //sets the initial URL for this test
     //action
     render(<RouterProvider router={testRouter} />);
     //assert
     await waitFor(() => {
-      const headerComponent = screen.getByTestId('mockHeaderComponent');
-      const profileComponent = screen.getByTestId('mockProfileComponent');
+      const headerComponent = screen.getByTestId("mockHeaderComponent");
+      const profileComponent = screen.getByTestId("mockProfileComponent");
       expect(headerComponent).toBeInTheDocument();
       expect(profileComponent).toBeInTheDocument();
-    })
-    expect(screen.queryByTestId('mockHomeComponent')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('mockRegisterComponent')).not.toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("mockHomeComponent")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("mockRegisterComponent"),
+    ).not.toBeInTheDocument();
   });
 
-  it('renders the RouterProvider element', async () => {
+  it("renders the RouterProvider element", async () => {
     //arrange
     //action
     render(<App />);
     //assert
     await waitFor(() => {
-      const headerComponent = screen.getByTestId('mockHeaderComponent');
-      const homeComponent = screen.getByTestId('mockHomeComponent');
+      const headerComponent = screen.getByTestId("mockHeaderComponent");
+      const homeComponent = screen.getByTestId("mockHomeComponent");
       expect(headerComponent).toBeInTheDocument();
       expect(homeComponent).toBeInTheDocument();
-      expect(screen.queryByTestId('mockGameSelectionComponent')).not.toBeInTheDocument();
-    })
-  })
+      expect(
+        screen.queryByTestId("mockGameSelectionComponent"),
+      ).not.toBeInTheDocument();
+    });
+  });
 });
 
-describe('API_BASE_URL logic', () => {
+describe("API_BASE_URL logic", () => {
   const actualNodeEnv = process.env.NODE_ENV;
   beforeEach(() => {
     jest.resetModules(); //to clear cache
@@ -192,21 +245,21 @@ describe('API_BASE_URL logic', () => {
 
   afterAll(() => {
     process.env.NODE_ENV = actualNodeEnv; // restore original env var
-  })
+  });
 
   it('should return the production URL when NODE_ENV = "production" ', () => {
     //arrange
-    process.env.NODE_ENV = 'production';
-    const { API_BASE_URL } = require('../App.js');
+    process.env.NODE_ENV = "production";
+    const { API_BASE_URL } = require("../App.js");
     //assert
-    expect(API_BASE_URL).toBe('https://ecommerceapi-4-0b65.onrender.com'); //TO BE UPDATED WITH CORRECT URLs WHEN UPLOADED TO RENDER
+    expect(API_BASE_URL).toBe("https://ecommerceapi-4-0b65.onrender.com");
   });
 
-  it('should return the localhost URL when NODE_ENV is not production', () => {
+  it("should return the localhost URL when NODE_ENV is not production", () => {
     //arrage
-    process.env.NODE_ENV = 'development';
-    const { API_BASE_URL } = require('../App.js');
+    process.env.NODE_ENV = "development";
+    const { API_BASE_URL } = require("../App.js");
     //assert
-    expect(API_BASE_URL).toBe('http://localhost:4001'); //TO BE UPDATED WITH CORRECT URLs WHEN UPLOADED TO RENDER
+    expect(API_BASE_URL).toBe("http://localhost:4001");
   });
-})
+});
