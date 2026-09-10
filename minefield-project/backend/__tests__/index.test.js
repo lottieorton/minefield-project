@@ -46,8 +46,7 @@ describe("frontend base url logic and CORS calls", () => {
 
   it("uses ecommerceAPI url in CORS headers when in production", async () => {
     //arrange
-    process.env.NODE_ENV = "production";
-    const expectedURL = "https://ecommerceapi-5-iktx.onrender.com";
+    const expectedURL = "http://localhost:3000";
     //action
     const { app } = require("../index");
     const response = await request(app).get("/test"); //call an endpoint
@@ -78,20 +77,10 @@ describe("API base url logic", () => {
     process.env = originalEnv;
   });
 
-  it("uses localhost url when in development", async () => {
+  it("uses env url when in development", async () => {
     //arrange
-    process.env.NODE_ENV = "development";
+    process.env.API_BASE_URL = "http://localhost:4001";
     const expectedURL = "http://localhost:4001";
-    //action
-    const { API_BASE_URL } = require("../index");
-    //assert
-    expect(API_BASE_URL).toBe(expectedURL);
-  });
-
-  it("uses Render url when in production", async () => {
-    //arrange
-    process.env.NODE_ENV = "production";
-    const expectedURL = "https://ecommerceapi-5-iktx.onrender.com";
     //action
     const { API_BASE_URL } = require("../index");
     //assert

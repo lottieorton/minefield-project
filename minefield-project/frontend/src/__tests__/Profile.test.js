@@ -3,7 +3,6 @@ import { findByRole, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import { test } from "mocha";
 
 describe("fetches user info", () => {
   const testUser = {

@@ -247,17 +247,18 @@ describe("API_BASE_URL logic", () => {
     process.env.NODE_ENV = actualNodeEnv; // restore original env var
   });
 
-  it('should return the production URL when NODE_ENV = "production" ', () => {
+  it("should return the env URL when provided", () => {
     //arrange
-    process.env.NODE_ENV = "production";
+    process.env.REACT_APP_API_BASE_URL = "http://localhost:5000";
     const { API_BASE_URL } = require("../App.js");
     //assert
-    expect(API_BASE_URL).toBe("https://ecommerceapi-4-0b65.onrender.com");
+    expect(API_BASE_URL).toBe("http://localhost:5000");
+    //cleanup
+    delete process.env.REACT_APP_API_BASE_URL;
   });
 
-  it("should return the localhost URL when NODE_ENV is not production", () => {
+  it("should return the default URL when there is no env URL", () => {
     //arrage
-    process.env.NODE_ENV = "development";
     const { API_BASE_URL } = require("../App.js");
     //assert
     expect(API_BASE_URL).toBe("http://localhost:4001");
