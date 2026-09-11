@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "../../App.js";
+import { API_BASE_URL } from "../../App.jsx";
 
 export const saveGame = async (gameDifficulty, win) => {
   const payload = {

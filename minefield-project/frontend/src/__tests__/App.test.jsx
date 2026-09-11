@@ -7,9 +7,9 @@ import {
   RouterProvider,
   createMemoryRouter,
 } from "react-router-dom";
-import App from "../App.js";
+import App from "../App.jsx";
 
-jest.mock("../components/Header.js", () => {
+jest.mock("../components/Header.jsx", () => {
   const { Outlet } = require("react-router-dom");
   const HeaderComponent = () => {
     return (
@@ -25,14 +25,14 @@ jest.mock("../components/Header.js", () => {
     Header: HeaderComponent,
   };
 });
-jest.mock("../components/Home.js", () => ({
+jest.mock("../components/Home.jsx", () => ({
   __esModule: true,
   //Handles import Home from
   default: () => <div data-testid="mockHomeComponent">Mock Home Component</div>,
   //handles import { Home } from
   Home: () => <div data-testid="mockHomeComponent">Mock Home Component</div>,
 }));
-jest.mock("../components/GameSelection.js", () => ({
+jest.mock("../components/GameSelection.jsx", () => ({
   __esModule: true,
   default: () => (
     <div data-testid="mockGameSelectionComponent">
@@ -45,7 +45,7 @@ jest.mock("../components/GameSelection.js", () => ({
     </div>
   ),
 }));
-jest.mock("../components/Register.js", () => ({
+jest.mock("../components/Register.jsx", () => ({
   __esModule: true,
   default: () => (
     <div data-testid="mockRegisterComponent">Mock Register Component</div>
@@ -54,14 +54,14 @@ jest.mock("../components/Register.js", () => ({
     <div data-testid="mockRegisterComponent">Mock Register Component</div>
   ),
 }));
-jest.mock("../components/Login.js", () => ({
+jest.mock("../components/Login.jsx", () => ({
   __esModule: true,
   default: () => (
     <div data-testid="mockLoginComponent">Mock Login Component</div>
   ),
   Login: () => <div data-testid="mockLoginComponent">Mock Login Component</div>,
 }));
-jest.mock("../components/Profile.js", () => ({
+jest.mock("../components/Profile.jsx", () => ({
   __esModule: true,
   default: () => (
     <div data-testid="mockProfileComponent">Mock Profile Component</div>
@@ -74,10 +74,10 @@ jest.mock("../components/Profile.js", () => ({
 describe("App component routing", () => {
   it('renders the Header and Home component on the root path "/" ', async () => {
     //arrange
-    const MockHeader = require("../components/Header.js").Header;
-    const MockHome = require("../components/Home.js").Home;
+    const MockHeader = require("../components/Header.jsx").Header;
+    const MockHome = require("../components/Home.jsx").Home;
     const MockGameSelection =
-      require("../components/GameSelection.js").GameSelection;
+      require("../components/GameSelection.jsx").GameSelection;
     //create a router for this test
     const testRouter = createMemoryRouter(
       createRoutesFromElements([
@@ -104,10 +104,10 @@ describe("App component routing", () => {
 
   it('renders the Header and GameSelection component on the path "/game" ', async () => {
     //arrange
-    const MockHeader = require("../components/Header.js").Header;
-    const MockHome = require("../components/Home.js").Home;
+    const MockHeader = require("../components/Header.jsx").Header;
+    const MockHome = require("../components/Home.jsx").Home;
     const MockGameSelection =
-      require("../components/GameSelection.js").GameSelection;
+      require("../components/GameSelection.jsx").GameSelection;
     //create a router for this test
     const testRouter = createMemoryRouter(
       createRoutesFromElements([
@@ -134,9 +134,9 @@ describe("App component routing", () => {
 
   it('renders the Header and Register component on the path "/register" ', async () => {
     //arrange
-    const MockHeader = require("../components/Header.js").Header;
-    const MockHome = require("../components/Home.js").Home;
-    const MockRegister = require("../components/Register.js").Register;
+    const MockHeader = require("../components/Header.jsx").Header;
+    const MockHome = require("../components/Home.jsx").Home;
+    const MockRegister = require("../components/Register.jsx").Register;
     //create a router for this test
     const testRouter = createMemoryRouter(
       createRoutesFromElements([
@@ -162,9 +162,9 @@ describe("App component routing", () => {
 
   it('renders the Header and Login component on the path "/login" ', async () => {
     //arrange
-    const MockHeader = require("../components/Header.js").Header;
-    const MockHome = require("../components/Home.js").Home;
-    const MockLogin = require("../components/Login.js").Login;
+    const MockHeader = require("../components/Header.jsx").Header;
+    const MockHome = require("../components/Home.jsx").Home;
+    const MockLogin = require("../components/Login.jsx").Login;
     //create a router for this test
     const testRouter = createMemoryRouter(
       createRoutesFromElements([
@@ -192,9 +192,9 @@ describe("App component routing", () => {
 
   it('renders the Header and Profile component on the path "/profile" ', async () => {
     //arrange
-    const MockHeader = require("../components/Header.js").Header;
-    const MockHome = require("../components/Home.js").Home;
-    const MockProfile = require("../components/Profile.js").Profile;
+    const MockHeader = require("../components/Header.jsx").Header;
+    const MockHome = require("../components/Home.jsx").Home;
+    const MockProfile = require("../components/Profile.jsx").Profile;
     //create a router for this test
     const testRouter = createMemoryRouter(
       createRoutesFromElements([
@@ -250,7 +250,7 @@ describe("API_BASE_URL logic", () => {
   it("should return the env URL when provided", () => {
     //arrange
     process.env.REACT_APP_API_BASE_URL = "http://localhost:5000";
-    const { API_BASE_URL } = require("../App.js");
+    const { API_BASE_URL } = require("../App.jsx");
     //assert
     expect(API_BASE_URL).toBe("http://localhost:5000");
     //cleanup
@@ -259,7 +259,7 @@ describe("API_BASE_URL logic", () => {
 
   it("should return the default URL when there is no env URL", () => {
     //arrage
-    const { API_BASE_URL } = require("../App.js");
+    const { API_BASE_URL } = require("../App.jsx");
     //assert
     expect(API_BASE_URL).toBe("http://localhost:4001");
   });

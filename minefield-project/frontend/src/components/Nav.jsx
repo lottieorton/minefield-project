@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API_BASE_URL } from "../App.js";
+import { API_BASE_URL } from "../App.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import MinesweeperIcon from "../imgs/MinesweeperIcon.png";

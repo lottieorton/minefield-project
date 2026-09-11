@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Filter from "./Filter.js";
-import GameBoard from "./presentational/GameBoard.js";
+import Filter from "./Filter.jsx";
+import GameBoard from "./presentational/GameBoard.jsx";
 import "../styles/GameSelection.css";
 import Rocket from "../imgs/Rocket.png";
 import { createBoard } from "./functions/gameBoardCreation.js";

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Nav from "../components/Nav.js";
+import Nav from "./Nav.jsx";
 import "../styles/Header.css";
 
 export default function Header() {

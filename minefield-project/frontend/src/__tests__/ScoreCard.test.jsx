@@ -2,7 +2,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { waitFor, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ScoreCard from "../components/presentational/ScoreCard.js";
+import ScoreCard from "../components/presentational/ScoreCard.jsx";
 
 describe("renders component with prop values", () => {
   it("passes updated game scores via prop to ScoreCards", async () => {
