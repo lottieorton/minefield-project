@@ -68,7 +68,7 @@ export default function Login() {
       <form className="form" onSubmit={handleSubmit}>
         <div className="user-form">
           <div className="user-form-fields">
-            <label for="username">Username: </label>
+            <label htmlFor="username">Username: </label>
             <input
               id="username"
               name="username"
@@ -77,7 +77,7 @@ export default function Login() {
               value={loginInfo.username}
               required
             />
-            <label for="password">Password: </label>
+            <label htmlFor="password">Password: </label>
             <input
               id="password"
               name="password"

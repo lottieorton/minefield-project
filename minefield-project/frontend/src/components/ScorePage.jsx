@@ -52,7 +52,7 @@ export default function ScorePage() {
     <div className="scores-page">
       <div className="score-block">
         {scores.map((game) => {
-          return <ScoreCard game={game} />;
+          return <ScoreCard key={game.difficulty} game={game} />;
         })}
       </div>
     </div>

@@ -10,7 +10,7 @@ export default function Filter({ onValueChange }) {
   return (
     <>
       <form className="filter-form">
-        <label for="gameChoices">Choose your difficulty: </label>
+        <label htmlFor="gameChoices">Choose your difficulty: </label>
         <select id="gameChoices" name="gameChoices" onChange={handleChange}>
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>

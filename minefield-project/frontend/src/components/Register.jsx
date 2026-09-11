@@ -84,7 +84,7 @@ export default function Register() {
       <form className="form" onSubmit={handleSubmit}>
         <div className="user-form">
           <div className="user-form-fields">
-            <label for="username">Username: </label>
+            <label htmlFor="username">Username: </label>
             <input
               id="username"
               name="username"
@@ -93,7 +93,7 @@ export default function Register() {
               value={registerInfo.username}
               required
             />
-            <label for="password">Password: </label>
+            <label htmlFor="password">Password: </label>
             <input
               id="password"
               name="password"
@@ -102,7 +102,7 @@ export default function Register() {
               value={registerInfo.password}
               required
             />
-            <label for="first-name">First Name: </label>
+            <label htmlFor="first-name">First Name: </label>
             <input
               id="first-name"
               name="firstName"
@@ -111,7 +111,7 @@ export default function Register() {
               value={registerInfo.firstName}
               required
             />
-            <label for="last-name">Last Name: </label>
+            <label htmlFor="last-name">Last Name: </label>
             <input
               id="last-name"
               name="lastName"
