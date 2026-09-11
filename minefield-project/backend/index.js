@@ -10,23 +10,23 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const db = require("./queries/queries.js");
 const bodyParser = require("body-parser");
-//need to update to HTTPS
 const FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL;
 const API_BASE_URL = process.env.API_BASE_URL;
 const cors = require("cors");
 const GoogleStrategy = require("passport-google-oidc");
 
-//Router imports
+// Router imports
 const gameBoardRouter = require("./routes/gameBoard.js");
 const usersRouter = require("./routes/users.js");
 const scoreRouter = require("./routes/scores.js");
-//app.use(express.static('public')); NOT NEEDED
 app.set("trust proxy", 1);
-app.use(cors({ credentials: true, origin: FRONTEND_BASE_URL })); //allows credentials request
+
+// Allows credientials request
+app.use(cors({ credentials: true, origin: FRONTEND_BASE_URL }));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
-//session set up
+// Session set up
 const sessionSecret = crypto.randomBytes(32).toString("base64");
 
 const cookie = {
@@ -46,7 +46,7 @@ app.use(
   }),
 );
 
-//passport and bcrypt
+// Passport and bcrypt
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -59,14 +59,12 @@ passport.use(
     },
     async function (issuer, profile, cb) {
       try {
-        //check for existing federated credential
-        console.log("issuer is: " + issuer);
-        console.log("profile is: " + JSON.stringify(profile));
+        // Check for existing federated credential
+
         const credResult = await db.pool.query(
           "SELECT * FROM federated_credentials WHERE provider = $1 AND subject = $2",
           [issuer, profile.id],
         );
-        console.log(`credResult is:` + JSON.stringify(credResult));
 
         const cred = credResult.rows[0];
 
@@ -81,12 +79,11 @@ passport.use(
             ],
           );
           const newUser = userInsertResult.rows[0];
-          console.log("newUser: " + JSON.stringify(newUser));
           await db.pool.query(
             "INSERT INTO federated_credentials (user_id, provider, subject) VALUES ($1, $2, $3)",
             [newUser.id, issuer, profile.id],
           );
-          //returns the new user object for Passport serialization
+          // Returns the new user object for Passport serialization
           return cb(null, newUser);
         } else {
           // The Google account has previously logged in to the app.  Get the user record linked to the Google account and log the user in.
@@ -108,13 +105,13 @@ passport.use(
   ),
 );
 
-//Google request login
+// Google request login
 app.get(
   "/login/google",
   passport.authenticate("google", { scope: ["email", "profile"] }),
 );
 
-//callback URL called when logged in
+// Callback URL called when logged in
 app.get(
   "/auth/google/redirect",
   passport.authenticate("google", {
@@ -122,7 +119,7 @@ app.get(
     failureMessage: true,
   }),
   (req, res) => {
-    //successful authentication, redirection
+    // Successful authentication, redirection
     res.redirect(`${FRONTEND_BASE_URL}/profile`);
   },
 );
@@ -143,9 +140,9 @@ const getUserByUsername = async (username) => {
 async function authenticateUser(username, password, done) {
   try {
     const user = await getUserByUsername(username);
-    //if user not found
+    // If user not found
     if (!user) return done(null, false, { message: "Cannot find user" });
-    //if user found compare password
+    // If user found compare password
     const matchedPassword = await bcrypt.compare(password, user.password);
     if (matchedPassword) {
       return done(null, user);
@@ -157,31 +154,21 @@ async function authenticateUser(username, password, done) {
   }
 }
 
-passport.use(
-  new LocalStrategy(
-    {
-      /*usernameField: 'username'*/
-    },
-    authenticateUser,
-  ),
-); //usernameField only needed if the exact file names username and password aren't used
+passport.use(new LocalStrategy(authenticateUser));
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log("deserializing user: " + id);
   try {
     const result = await db.pool.query("SELECT * FROM users WHERE id = $1", [
       id,
     ]);
     const user = result.rows[0];
     if (user) {
-      console.log("req.user deserialize:" + user);
       done(null, user);
     } else {
-      console.log("req.user deserialize: not found");
       done(null, false);
     }
   } catch (error) {
@@ -191,35 +178,23 @@ passport.deserializeUser(async (id, done) => {
 
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log(`attempting to login post endpoint with`);
-    console.log(
-      `autentication done error is: ${JSON.stringify(err)} user is ${JSON.stringify(user)}, info is: ${JSON.stringify(info)}`,
-    );
-
     if (err) {
-      console.log(`authentication failed with error`);
       return next(err);
     }
     if (!user) {
       // Handle failure response here
-      console.log(`autentication failed with no user`);
-
       return res
         .status(401)
         .json({ message: info.message || "Authentication failed" });
     }
-    //establishes the session and calls passport.serializeUser
+    // Establishes the session and calls passport.serializeUser
     req.login(user, (err) => {
-      console.log("Logged in supposedly with user:" + JSON.stringify(user));
       req.session.save((saveErr) => {
-        console.log("SAVING REQUEST SESSION");
         if (saveErr) {
-          console.error("Session save error after login:", saveErr);
           return next(saveErr);
         }
-        // session is now saved, and the cookie is set
+        // Session is now saved, and the cookie is set
 
-        console.log(`Hello ${user.first_name} logged in as ${user.username}`);
         // This response carries the Set-Cookie header.
 
         return res.status(200).json({
@@ -236,23 +211,16 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/logout", (req, res, next) => {
-  console.log(
-    "Is logout mocked?",
-    req.logout.toString().includes("errorMessage"),
-  );
   req.logout((err) => {
     if (err) {
-      console.log("error logging out");
       return next(err);
     }
-    //optional but deleting the session and clearling the cookie
+    // Optional - deleting the session and clearing the cookie
     req.session.destroy((err) => {
       if (err) {
         return next(err);
       }
       res.clearCookie("connect.sid");
-      console.log("Logged out");
-      //res.redirect('/');
       return res.status(200).json({
         message: "Successfully logged out",
       });
@@ -261,31 +229,26 @@ app.get("/logout", (req, res, next) => {
 });
 
 //Just for testing purposes
-// const getUserById = async (req, res, next) => {
-//     if (req.isAuthenticated()) {
-//         console.log('User session correctly sustained');
-//         res.status(200).json(req.user.username);
-//     } else {
-//         res.status(401).send('Not authenticated');
-//     }
-// };
-// app.get('/me', getUserById);
+const getUserById = async (req, res, next) => {
+  if (req.isAuthenticated()) {
+    console.log("User session correctly sustained");
+    res.status(200).json(req.user.username);
+  } else {
+    res.status(401).send("Not authenticated");
+  }
+};
+app.get("/me", getUserById);
 
-//API requests
+// API requests
 app.use("/gameBoard", gameBoardRouter);
 app.use("/user", usersRouter);
 app.use("/scores", scoreRouter);
 
-//error-handling middleware
+// Error-handling middleware
 app.use((err, req, res, next) => {
-  console.log("LOGOUT ERROR DEBUG:", err);
   const status = err.status || 500;
   res.status(status).send(err.message);
 });
-
-// app.listen(PORT, () => {
-//     console.log(`Server is listening on port ${PORT}`)
-// });
 
 module.exports = {
   app,

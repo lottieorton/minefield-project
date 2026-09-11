@@ -1,53 +1,38 @@
-import './App.css';
-import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
-import Header from './components/Header.js';
-import Home from './components/Home.js';
-import GameSelection from './components/GameSelection.js';
-import Register from './components/Register.js';
-import Login from './components/Login.js'
-import ScorePage from './components/ScorePage.js'; 
-import Profile from './components/Profile.js';
+import "./App.css";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom";
+import Header from "./components/Header.js";
+import Home from "./components/Home.js";
+import GameSelection from "./components/GameSelection.js";
+import Register from "./components/Register.js";
+import Login from "./components/Login.js";
+import ScorePage from "./components/ScorePage.js";
+import Profile from "./components/Profile.js";
 
-// console.log(`Env variable ${process.env.NODE_ENV}`);
-// console.log(`Env variable render ${process.env.RENDER}`);
-
-//will need to update with httpS
-//to be updated with the correct URL when uploaded to Render
-export const API_BASE_URL = 
-    process.env.NODE_ENV === 'production' 
-        ? 'https://minefield-project.onrender.com'
-        : 'http://localhost:4001';
-
+export const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:4001";
 
 export default function App() {
-  const router = createBrowserRouter(createRoutesFromElements(
-    <Route path = '/' element = { <Header /> } >
-      <Route index element = { <Home /> } />
-      <Route path = 'game' element = { <GameSelection /> } />
-      <Route path = 'register' element = { <Register /> } />
-      <Route path = 'login' element = { <Login /> } />
-      <Route path = 'scores' element = { <ScorePage /> } />
-      <Route path = 'profile' element = { <Profile /> } />
-    </Route>
-  ));
-  
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<Header />}>
+        <Route index element={<Home />} />
+        <Route path="game" element={<GameSelection />} />
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="scores" element={<ScorePage />} />
+        <Route path="profile" element={<Profile />} />
+      </Route>,
+    ),
+  );
+
   return (
-    <RouterProvider router={ router } />
-    /*<div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>*/
+    <div className="App">
+      <RouterProvider router={router} />
+    </div>
   );
 }
