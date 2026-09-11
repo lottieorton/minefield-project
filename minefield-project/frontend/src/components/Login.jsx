@@ -1,7 +1,7 @@
 import "../styles/UserForms.css";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { API_BASE_URL } from "../App.js";
+import { API_BASE_URL } from "../App.jsx";
 
 export default function Login() {
   const navigate = useNavigate();

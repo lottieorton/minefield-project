@@ -2,9 +2,9 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { waitFor, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ScorePage from "../components/ScorePage";
+import ScorePage from "../components/ScorePage.jsx";
 
-jest.mock("../components/presentational/ScoreCard.js", () => {
+jest.mock("../components/presentational/ScoreCard.jsx", () => {
   return function MockedScoreCard(props) {
     const game = props.game;
     return (
@@ -20,7 +20,7 @@ jest.mock("../components/presentational/ScoreCard.js", () => {
   };
 });
 
-import ScoreCard from "../components/presentational/ScoreCard.js";
+import ScoreCard from "../components/presentational/ScoreCard.jsx";
 
 describe("fetches users score", () => {
   const testScores = [

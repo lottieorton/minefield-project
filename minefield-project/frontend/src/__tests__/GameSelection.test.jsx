@@ -7,7 +7,7 @@ jest.mock("../components/functions/gameBoardCreation.js", () => ({
   createBoard: jest.fn(),
 }));
 
-jest.mock("../components/Filter.js", () => {
+jest.mock("../components/Filter.jsx", () => {
   return function MockedFilter(props) {
     return (
       <div data-testid="mock-filter">
@@ -30,7 +30,7 @@ jest.mock("../components/Filter.js", () => {
 });
 
 const mockGameBoardComponent = jest.fn();
-jest.mock("../components/presentational/GameBoard.js", () => {
+jest.mock("../components/presentational/GameBoard.jsx", () => {
   return function MockedGameBoard(props) {
     return mockGameBoardComponent(props);
   };
@@ -40,7 +40,7 @@ jest.mock("../components/functions/saveGame.js", () => ({
   saveGame: jest.fn(),
 }));
 
-import GameSelection from "../components/GameSelection.js";
+import GameSelection from "../components/GameSelection.jsx";
 const { createBoard } = require("../components/functions/gameBoardCreation.js");
 const { saveGame } = require("../components/functions/saveGame.js");
 

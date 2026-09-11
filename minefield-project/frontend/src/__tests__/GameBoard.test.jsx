@@ -1,4 +1,4 @@
-import GameBoard from "../components/presentational/GameBoard.js";
+import GameBoard from "../components/presentational/GameBoard.jsx";
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Routes, Route } from "react-router-dom";

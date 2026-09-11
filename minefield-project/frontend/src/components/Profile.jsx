@@ -1,7 +1,7 @@
 import "../styles/Scores.css";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../App.js";
+import { API_BASE_URL } from "../App.jsx";
 
 export default function Profile() {
   const [updatedInfo, setUpdatedInfo] = useState({

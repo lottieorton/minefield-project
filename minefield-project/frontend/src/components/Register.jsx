@@ -1,7 +1,7 @@
 import "../styles/UserForms.css";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../App.js";
+import { API_BASE_URL } from "../App.jsx";
 
 export default function Register() {
   const navigate = useNavigate();

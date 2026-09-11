@@ -1,4 +1,4 @@
-import Register from "../components/Register.js";
+import Register from "../components/Register.jsx";
 import { render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Routes, Route } from "react-router-dom";

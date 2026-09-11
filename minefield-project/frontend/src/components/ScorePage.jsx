@@ -1,7 +1,7 @@
 import "../styles/Scores.css";
-import ScoreCard from "./presentational/ScoreCard.js";
+import ScoreCard from "./presentational/ScoreCard.jsx";
 import React, { useState, useEffect } from "react";
-import { API_BASE_URL } from "../App.js";
+import { API_BASE_URL } from "../App.jsx";
 
 export default function ScorePage() {
   const [scores, setScores] = useState([

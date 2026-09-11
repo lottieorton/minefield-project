@@ -2,7 +2,7 @@ import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { waitFor, render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Nav from "../components/Nav.js";
+import Nav from "../components/Nav.jsx";
 
 describe("checks user logged in status", () => {
   it("makes an API call to check if user logged in", async () => {

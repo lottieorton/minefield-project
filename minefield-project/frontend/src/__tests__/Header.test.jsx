@@ -1,9 +1,9 @@
-import Header from "../components/Header.js";
+import Header from "../components/Header.jsx";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
-jest.mock("../components/Nav.js", () => {
+jest.mock("../components/Nav.jsx", () => {
   return function MockNav() {
     return <div data-testid="mock-nav">Mock Nav Component</div>;
   };

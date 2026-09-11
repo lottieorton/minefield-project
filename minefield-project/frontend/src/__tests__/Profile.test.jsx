@@ -1,4 +1,4 @@
-import Profile from "../components/Profile.js";
+import Profile from "../components/Profile.jsx";
 import { findByRole, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
