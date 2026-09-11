@@ -102,7 +102,7 @@ export default function Profile() {
         <div className="form">
           <div className="user-form-fields">
             <h2 className="main-header">Want to update your details:</h2>
-            <label for="first-name">First Name: </label>
+            <label htmlFor="first-name">First Name: </label>
             <input
               id="first-name"
               name="firstName"
@@ -111,7 +111,7 @@ export default function Profile() {
               value={updatedInfo.firstName}
               required
             />
-            <label for="last-name">Last Name: </label>
+            <label htmlFor="last-name">Last Name: </label>
             <input
               id="last-name"
               name="lastName"
